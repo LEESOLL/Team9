@@ -1,5 +1,8 @@
 package com.example.market9.entity;
 
+import javax.persistence.Entity;
+
+@Entity
 public class User {
 
     private Long id;
