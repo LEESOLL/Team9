@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  *Product 엔티티
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Board {
+public class Board extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "Board_Id")
