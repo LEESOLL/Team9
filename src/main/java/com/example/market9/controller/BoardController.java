@@ -1,23 +1,37 @@
 package com.example.market9.controller;
 
 
+import com.example.market9.dto.CreateSalePostRequestDto;
+import com.example.market9.dto.CreateSalePostResponseDto;
 import com.example.market9.service.BoardService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Getter
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/products")    //CRUD
 public class BoardController {
 
+     private final BoardService boardService;
+
+    //판매 게시글 등록
+     @PostMapping("/")
+     public CreateSalePostResponseDto createSalePost(@RequestBody CreateSalePostRequestDto createSalePostRequestDto /* @AuthenticationPrincipal UserDetailsImpl userDetails)*/) {
+        return boardService.createSalePost(createSalePostRequestDto);
+     }
+
+    //판매상품조회
+
+    //판매상품수정
+
+    //판매상품삭제
+
+    //고객요청 목록 조회
 
 
-    //기준되는 인터페이스.1  < 구현한  정액할인 비스 1 >~
-                         //=<  구현한정률항인서비스~. 객체지향..... IOC DI... 지켜진다고 ....김영한님...알려주셨습니다... 무료강의 !
-    //
+
+
+
 }
