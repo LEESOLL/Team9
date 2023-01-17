@@ -1,4 +1,4 @@
-package com.example.market9.controller;
+package com.example.market9.dto;
 
 import lombok.Getter;
 

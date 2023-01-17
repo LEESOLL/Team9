@@ -1,4 +1,4 @@
-package com.example.market9.controller;
+package com.example.market9.dto;
 
 import com.example.market9.entity.Profile;
 import com.example.market9.entity.Users;

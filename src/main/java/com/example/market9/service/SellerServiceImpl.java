@@ -1,7 +1,7 @@
 package com.example.market9.service;
 
-import com.example.market9.controller.InfoRequestDTo;
-import com.example.market9.controller.SellerProfileResponseDto;
+import com.example.market9.dto.InfoRequestDTo;
+import com.example.market9.dto.SellerProfileResponseDto;
 import com.example.market9.entity.Profile;
 import com.example.market9.entity.Users;
 import com.example.market9.repository.ProfileRepository;
