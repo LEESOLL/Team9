@@ -4,11 +4,10 @@ public enum RoleType {
     /*ROLE_USER,
     ROLE_SELLER,
     ROLE_ADMIN*/
-
+    //이넘은 쉼표로 이어져야한다 ...
     USER(Authority.USER),  // 사용자 권한
     ADMIN(Authority.ADMIN),  // 관리자 권한
-    SELLER(Authority.SELLER);
-   /* SELLER(Authority.SELLER); ? ....*/
+    SELLER(Authority.SELLER); //원준님 최고 !!
     private final String authority;
 
     RoleType(String authority) {

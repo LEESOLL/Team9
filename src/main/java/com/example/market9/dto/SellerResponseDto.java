@@ -1,7 +1,5 @@
 package com.example.market9.dto;
 
-import com.example.market9.entity.User;
-
 public class SellerResponseDto {
     private String name;
     private String nickname;

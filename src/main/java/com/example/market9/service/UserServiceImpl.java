@@ -2,15 +2,12 @@ package com.example.market9.service;
 
 import com.example.market9.dto.*;
 import com.example.market9.entity.Profile;
-import com.example.market9.entity.RoleType;
-import com.example.market9.entity.User;
 import com.example.market9.repository.ProfileRepository;
 import com.example.market9.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -76,7 +73,6 @@ public class UserServiceImpl {
         return ProfileResponseDto.of(seller);
 
     }
-
 }
 
 
