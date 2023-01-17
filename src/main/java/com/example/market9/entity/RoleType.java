@@ -6,7 +6,8 @@ public enum RoleType {
     ROLE_ADMIN*/
 
     USER(Authority.USER),  // 사용자 권한
-    ADMIN(Authority.ADMIN);  // 관리자 권한
+    ADMIN(Authority.ADMIN),  // 관리자 권한
+    SELLER(Authority.SELLER);
    /* SELLER(Authority.SELLER); ? ....*/
     private final String authority;
 

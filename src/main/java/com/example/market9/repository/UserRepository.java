@@ -1,4 +1,14 @@
 package com.example.market9.repository;
 
-public interface UserRepository {
+import com.example.market9.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findByUsername(String username);
+
+    List<User> findByRoleType(String roleType);
 }
