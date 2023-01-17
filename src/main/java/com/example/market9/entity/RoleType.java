@@ -8,7 +8,7 @@ public enum RoleType {
     USER(Authority.USER),  // 사용자 권한
     ADMIN(Authority.ADMIN),  // 관리자 권한
     SELLER(Authority.SELLER); //원준님 최고 !!
-    private final String authority;/////
+    private final String authority;
 
     RoleType(String authority) {
         this.authority = authority;
