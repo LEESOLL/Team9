@@ -17,7 +17,7 @@ public class Profile {
 
     private String introduce;
 
-    private String category ;
+    private String category;
 
     private String username;    //컨트롤러 ~
 
@@ -29,7 +29,7 @@ public class Profile {
     // userDetails.getUser() 이러면 ~ 유저 객체가 꺼내지고 여기서또 getUsername  즉 userDetails.getUser().getUserName
 
 
-    public Profile(String introduce, String category, String  username) {
+    public Profile(String introduce, String category, String username) {
         this.introduce = introduce;
         this.category = category;
         this.username = username;

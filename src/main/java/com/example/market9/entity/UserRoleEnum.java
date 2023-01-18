@@ -1,6 +1,6 @@
 package com.example.market9.entity;
 
-public enum RoleType {
+public enum UserRoleEnum {
     /*ROLE_USER,
     ROLE_SELLER,
     ROLE_ADMIN*/
@@ -10,7 +10,7 @@ public enum RoleType {
     SELLER(Authority.SELLER); //원준님 최고 !!
     private final String authority;
 
-    RoleType(String authority) {
+    UserRoleEnum(String authority) {
         this.authority = authority;
     }
 
