@@ -1,7 +1,8 @@
-/*
+
 package com.example.market9.controller;
 
 import com.example.market9.dto.*;
+import com.example.market9.entity.Users;
 import com.example.market9.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,32 +36,15 @@ public class UserController {
         return "login success";
     }
 
-//    // 3. 나의 정보 설정(프로필 변경)
-//    @PutMapping("/profile")
-//    public HttpStatus changeMyProfile(@Valid @RequestBody ProfileRequestDto profileRequestDto) {
-//        userServiceImpl.changeMyProfile(profileRequestDto);
-//        return HttpStatus.OK;
-//    }
-//
-//    // 4. 나의 정보 조회
-//    @GetMapping("/profile")
-//    public ResponseEntity<ProfileResponseDto> getMyProfile(@AuthenticationPrincipal UserDetails userDetails){
-//        ProfileResponseDto data = userServiceImpl.getMyProfile(UserDetails.getUser().getId());
-//        return ResponseEntity.status(200).body(data);
-//    }
-//
-//    // 5. 전체 판매자 목록 조회
-//    @GetMapping("/sellers")
-//    public List<SellerResponseDto> getSellerList() {
-//        return userServiceImpl.getSellerList();
-//    }
-//
-//    // 6. 판매자 정보 조회
-////    @GetMapping("/sellers/{sellerId}")
+    // 3. 나의 정보 설정(프로필 변경)
+    @PutMapping("/profile/{id}")
+    public Long changeUserProfile(@PathVariable Long id, @RequestBody ProfileRequestDto profileRequestDto) {
+        return userServiceImpl.changeUserProfile(id, profileRequestDto);
+    }
 
-
-
-
+    // 4. 나의 정보 조회
+    @GetMapping("/profile/{id}")
+    public ProfileResponseDto getMyProfile(@PathVariable Long id) {
+        return userServiceImpl.getMyProfile(id);
+    }
 }
-
- */

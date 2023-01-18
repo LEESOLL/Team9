@@ -22,6 +22,7 @@ public class SignUpRequestDto {
     private String password;
 
     private String nickname;
+    private String image = "기본이미지";
 
     private boolean admin = false;
     private String adminToken = "";

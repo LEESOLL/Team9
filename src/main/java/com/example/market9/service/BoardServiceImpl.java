@@ -29,6 +29,7 @@ public class BoardServiceImpl implements  BoardService{
         return new CreateSalePostResponseDto(board);
     }
 
+
     // 나중에...예외처리 적용할때 .. 수정
     @Override
     @Transactional
@@ -48,6 +49,7 @@ public class BoardServiceImpl implements  BoardService{
     }
 
 
+
     //판매상품수정
     @Transactional
     @Override
@@ -58,6 +60,7 @@ public class BoardServiceImpl implements  BoardService{
 
 
 
+
     //(고객)판매자에게 요청폼 보내기
     @Override
     @Transactional
@@ -65,4 +68,5 @@ public class BoardServiceImpl implements  BoardService{
         UserRequest userRequest = new UserRequest(requestSellerDto,productId/*,name*/);
         purchaseRequestRepository.save(userRequest);
     }
+
 }

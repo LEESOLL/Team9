@@ -1,36 +1,41 @@
 package com.example.market9.controller;
 
 import com.example.market9.dto.InfoRequestDTo;
+import com.example.market9.dto.SellerProfileRequestDto;
 import com.example.market9.dto.SellerProfileResponseDto;
+import com.example.market9.dto.SellerResponseDto;
 import com.example.market9.service.SellerService;
+import com.example.market9.service.SellerServiceImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 /*import org.springframework.security.core.annotation.AuthenticationPrincipal;*/
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@Getter
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class SellerController {
 
-    private final SellerService sellerService;
+    private final SellerServiceImpl sellerServiceImpl;
 
-    // 선택한 셀러 프로필 조회(셀러,,,,방향을 )  ///.........어,,,
-
-    /**
-     *  검증로직이 필요함 !
-     *
-     * @return   서비스 이용 !
-     */
-
-    // 선택한 셀러 프로필 조회  /로그인 jwt +시큐리티(필터 ~ 인증 , 인가)
-    @GetMapping("/profile")    //url패스베리어블 ㅠㅠㅠ   ,  ,  ? ,,,username = " "리퀘스트파람
-    public SellerProfileResponseDto getSellerProfile(@RequestBody InfoRequestDTo infoRequestDTo/*@AuthenticationPrincipal UserDetailsImpl userDetails*/) {
-        return sellerService.getSellerProfile(infoRequestDTo); //대박 입니다 ..! 맞습니다 !
+    // 5. 전체 판매자 목록 조회
+    @GetMapping("/sellers")
+    public List<SellerResponseDto> getSellerList() {
+        return sellerServiceImpl.getSellerList();
     }
 
-    // 선택한 셀러 프로필 수정 .....다시내려받고...
+    // 6. 판매자 정보 조회
+    @GetMapping("/sellers/{id}")
+    public SellerProfileResponseDto getSellerProfile(@PathVariable Long id) {
+        return sellerServiceImpl.getSellerProfile(id);
+    }
 
+    // 7. 판매자 자신의 프로필 변경
+    @PutMapping("/sellers/{id}")
+    public Long changeSellerProfile(@PathVariable Long id, @RequestBody SellerProfileRequestDto sellerProfileRequestDto) {
+        return sellerServiceImpl.changeSellerProfile(id, sellerProfileRequestDto);
+    }
 
 }

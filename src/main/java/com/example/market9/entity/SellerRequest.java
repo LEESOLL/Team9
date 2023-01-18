@@ -5,3 +5,4 @@ public class SellerRequest {
     private Profile profile;
 
 }
+ 

@@ -1,8 +1,8 @@
 package com.example.market9.service;
 
-import com.example.market9.dto.InfoRequestDTo;
-import com.example.market9.dto.SellerProfileResponseDto;
+import com.example.market9.dto.*;
 import com.example.market9.entity.Profile;
+import com.example.market9.entity.UserRoleEnum;
 import com.example.market9.entity.Users;
 import com.example.market9.repository.ProfileRepository;
 import com.example.market9.repository.UserRepository;
@@ -10,30 +10,42 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class SellerServiceImpl implements SellerService {
 
-    private final UserRepository userRepository;///
+    private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
 
 
-    @Transactional
-    @Override  // 조회도 상관없습니다 !//   ~~~ user삭제할때 ... profile 들려서 같이 삭제....
-    public SellerProfileResponseDto getSellerProfile(InfoRequestDTo infoRequestDTo) {
-
-        System.out.println("UserName : " + infoRequestDTo.getUserName());
-
-        Users user = userRepository.findByUsername(infoRequestDTo.getUserName()).orElseThrow(()-> new IllegalArgumentException("사용자가 존재하지 않습니다."));
-        Profile profile = profileRepository.findByUsername(infoRequestDTo.getUserName()).orElseThrow(() ->new IllegalArgumentException("사용자 상세 프로필이 존재하지 않습니다"));
-
-        // 1. user 객체에다가, db에 id값으로 쿼리 날려서 유저 데이터 뽑아옴.
-        // 2. profile 객체에다가, db에 id값으로 쿼리 날려서 유저 데이터 뽑아옴.
-        // 1,2 번 가공해서, sellerprofiledto 만들어서 리턴해 줌.
-
-        return new SellerProfileResponseDto(user,profile);
+    @Transactional // 전체 판매자 목록 조회
+    public List<SellerResponseDto> getSellerList() {
+        List<Users> sellersList = userRepository.findAllByRole(UserRoleEnum.SELLER);
+        List<SellerResponseDto> sellerResponseDtoList = new ArrayList<>();
+        for(Users seller : sellersList) {
+            SellerResponseDto sellerResponseDto = new SellerResponseDto(seller);
+            sellerResponseDtoList.add(sellerResponseDto);
+        }
+        return sellerResponseDtoList;
     }
-    // H2 학습 ........ //오.눈물 ......
+
+    @Transactional // 판매자 정보 조회
+    public SellerProfileResponseDto getSellerProfile(Long id) {
+        Profile profile = profileRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return new SellerProfileResponseDto(profile);
+
+    }
+
+    @Transactional // 판매자 자신의 프로필 변경
+    public Long changeSellerProfile(Long id, SellerProfileRequestDto sellerProfileRequestDto) {
+        Profile profile = profileRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
+        profile.updateSelleProfile(sellerProfileRequestDto);
+        profileRepository.save(profile);
+        return id;
+    }
 
 }
 

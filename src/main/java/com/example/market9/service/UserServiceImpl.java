@@ -1,5 +1,3 @@
-/*
-
 package com.example.market9.service;
 
 import com.example.market9.dto.*;
@@ -14,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +36,7 @@ public class UserServiceImpl {
     public void signUp(SignUpRequestDto signUpRequestDto) {
         String username = signUpRequestDto.getUsername();
         String password = signUpRequestDto.getPassword();
+        String image = signUpRequestDto.getImage();
 
         // 회원 중복 확인
         Optional<Users> found = userRepository.findByUsername(username);
@@ -54,7 +55,12 @@ public class UserServiceImpl {
         }
 
         Users user = new Users(username, password, nickname, role);
+        Users seller = new Users(username, password, nickname, UserRoleEnum.SELLER);
+        Profile profile = new Profile(username, nickname, image);
         userRepository.save(user);
+        userRepository.save(seller);
+        profileRepository.save(profile);
+
     }
 
     @Transactional // 로그인
@@ -85,35 +91,21 @@ public class UserServiceImpl {
 //            throw new RuntimeException(" 비밀번호가 틀렸습니다 다시한번 확인해주세요.");
 //    }
 
-//    @Transactional // 프로필 변경
-//    public void changeMyProfile(Long profileId, ProfileRequestDto profileRequestDto, User user) {
-//        Profile profile = profileRepository.findById(profileId).orElseThrow(() -> new CustomException(ExceptionStatus.PROFILE_IS_NOT_EXIST));
-//        profile.checkUser(profile, user);
-//        profile.updateProfile(profileRequestDto);
-//        profileRepository.save(profile);
-//    }
+    @Transactional // 유저 자신의 프로필 변경
+    public Long changeUserProfile(Long id, ProfileRequestDto profileRequestDto) {
+        Profile profile = profileRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
+        profile.updateUserProfile(profileRequestDto);
+        profileRepository.save(profile);
+        return id;
+    }
 
-//    @Override // 나의 정보 조회
-//    public ProfileResponseDto getMyProfile(Long id) {
-//        Users user = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-//        return ProfileResponseDto.of(user);
-//    }
-//
-//    @Override // 전체 판매자 목록 조회
-//    public List<SellerResponseDto> getSellerList() {
-//        List<User> users = userRepository.findByRoleType("ROLE_SELLER");
-//        List<SellerResponseDto> sellers = users.stream().map(x -> new SellerResponseDto(x)).toList();
-//        return sellers;
-//    }
-//
-//    @Override // 판매자 정보 조회
-//    public ProfileResponseDto getSellerProfile(Long id) {
-//        Users seller = userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-//        return ProfileResponseDto.of(seller);
-//
-//    }
+    @Transactional // 유저 자신의 정보 조회
+    public ProfileResponseDto getMyProfile(Long id) {
+        Profile profile = profileRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return new ProfileResponseDto(profile);
+    }
+
 }
 
 
 
-*/
