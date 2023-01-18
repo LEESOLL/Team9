@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public class SalePostRequestDto {
 
+    private  Long id;
 
     private String title;
     private String productName;
