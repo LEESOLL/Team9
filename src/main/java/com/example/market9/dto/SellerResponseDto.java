@@ -1,3 +1,4 @@
+/*
 package com.example.market9.dto;
 
 import com.example.market9.entity.Users;
@@ -12,3 +13,4 @@ public class SellerResponseDto {
         this.nickname = user.getNickname();
     }
 }
+*/
