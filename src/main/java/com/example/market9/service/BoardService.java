@@ -1,6 +1,7 @@
 package com.example.market9.service;
 
 
+import com.example.market9.dto.RequestSellerDto;
 import com.example.market9.dto.SalePostRequestDto;
 import com.example.market9.dto.CreateSalePostResponseDto;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ public interface BoardService {
 
              ResponseEntity<String> deleteSalePost(Long productId);
 
-    public CreateSalePostResponseDto updateSalePost(Long id, SalePostRequestDto salePostRequestDto);
+    CreateSalePostResponseDto editSalePost(Long productId, SalePostRequestDto salePostRequestDto);
 
+     void requestSeller(Long productId, RequestSellerDto requestSellerDto/*,String name*/);
 }
