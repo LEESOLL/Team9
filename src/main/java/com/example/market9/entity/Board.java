@@ -26,6 +26,10 @@ public class Board extends TimeStamp {
     private String status; //? 이넘으로 하는
 
 
+
+
+
+
     public Board(SalePostRequestDto salePostRequestDto) {
         this.productName = salePostRequestDto.getProductName();
         this.title = salePostRequestDto.getTitle();
