@@ -65,7 +65,8 @@ public class BoardServiceImpl implements  BoardService{
     @Override
     @Transactional
     public void requestSeller(Long productId, RequestSellerDto requestSellerDto/*, String name*/) {
-        UserRequest userRequest = new UserRequest(requestSellerDto,productId/*,name*/);
+        Boolean status = false;
+        UserRequest userRequest = new UserRequest(requestSellerDto,productId/*,name*/,status);
         purchaseRequestRepository.save(userRequest);
     }
 

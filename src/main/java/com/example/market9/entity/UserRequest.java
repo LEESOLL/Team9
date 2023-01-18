@@ -19,10 +19,13 @@ public class UserRequest {
     private Long productId;
     private String userName; /// path 유저id만 가지고오면 .>장점 @OneToMany피할 수 있습니다.... //유저 id 유저 객체 어떤게 좋을까요.....?!
 
-    public UserRequest(RequestSellerDto requestSellerDto, Long productId/*, String userName*/) {
+    private boolean status;
+
+    public UserRequest(RequestSellerDto requestSellerDto, Long productId/*, String userName*/,Boolean status) {
         this.requestContent = requestSellerDto.getRequestContent();
         this.productId = productId;
         this.userName = requestSellerDto.getUserName();
+        this.status = status;
     }
 }
 
