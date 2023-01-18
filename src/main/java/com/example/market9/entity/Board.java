@@ -1,12 +1,11 @@
 package com.example.market9.entity;
 
 
-import com.example.market9.dto.CreateSalePostRequestDto;
+import com.example.market9.dto.SalePostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 /**
  *Product 엔티티
@@ -27,11 +26,11 @@ public class Board extends TimeStamp {
     private String status; //? 이넘으로 하는
 
 
-    public Board(CreateSalePostRequestDto createSalePostRequestDto) {
-        this.productName = createSalePostRequestDto.getProductName();
-        this.title = createSalePostRequestDto.getTitle();
-        this.content = createSalePostRequestDto.getContent();
-        this.price = createSalePostRequestDto.getPrice();
-        this.status = createSalePostRequestDto.getStatus();
+    public Board(SalePostRequestDto salePostRequestDto) {
+        this.productName = salePostRequestDto.getProductName();
+        this.title = salePostRequestDto.getTitle();
+        this.content = salePostRequestDto.getContent();
+        this.price = salePostRequestDto.getPrice();
+        this.status = salePostRequestDto.getStatus();
     }
 }

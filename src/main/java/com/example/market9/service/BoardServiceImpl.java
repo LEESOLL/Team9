@@ -1,7 +1,7 @@
 package com.example.market9.service;
 
 
-import com.example.market9.dto.CreateSalePostRequestDto;
+import com.example.market9.dto.SalePostRequestDto;
 import com.example.market9.dto.CreateSalePostResponseDto;
 import com.example.market9.entity.Board;
 import com.example.market9.repository.BoardRepository;
@@ -19,20 +19,22 @@ public class BoardServiceImpl implements  BoardService{
 
     @Transactional
     @Override
-    public CreateSalePostResponseDto createSalePost(CreateSalePostRequestDto createSalePostRequestDto) {
-        Board board = new Board(createSalePostRequestDto);
+    public CreateSalePostResponseDto createSalePost(SalePostRequestDto salePostRequestDto) {
+        Board board = new Board(salePostRequestDto);
         boardRepository.save(board);
 
         return new CreateSalePostResponseDto(board);
     }
 
+    // 나중에...예외처리 적용할때 .. 수정
     @Override
     public ResponseEntity<String> deleteSalePost(Long productId) {
+
         if(existsById(productId)) {
             boardRepository.deleteById(productId);
-            return new ResponseEntity<>("게시글삭제 완료했습니다", HttpStatus.PARTIAL_CONTENT);
+            return new ResponseEntity<>("게시글삭제 완료했습니다", HttpStatus.OK);
         }else{
-            return new ResponseEntity<>("게시글이 없습니다", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("게시글이 없습니다", HttpStatus.BAD_REQUEST); //@.....
         }
     }
 
