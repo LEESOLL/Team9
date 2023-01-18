@@ -1,8 +1,10 @@
-/*
+
 package com.example.market9.dto;
 
 import com.example.market9.entity.Users;
+import lombok.Getter;
 
+@Getter
 public class SellerResponseDto {
     private String username;
     private String nickname;
@@ -13,4 +15,3 @@ public class SellerResponseDto {
         this.nickname = user.getNickname();
     }
 }
-*/

@@ -5,7 +5,5 @@ import com.example.market9.dto.SellerProfileResponseDto;
 
 public interface SellerService {
 
-    public SellerProfileResponseDto getSellerProfile(InfoRequestDTo infoRequestDTo); //
-
 
 }

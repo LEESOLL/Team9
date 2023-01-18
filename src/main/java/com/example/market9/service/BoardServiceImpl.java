@@ -26,7 +26,7 @@ public class BoardServiceImpl implements  BoardService{
         return new CreateSalePostResponseDto(board);
     }
 
-<<<<<<< Updated upstream
+
     // 나중에...예외처리 적용할때 .. 수정
     @Override
     public ResponseEntity<String> deleteSalePost(Long productId) {
@@ -44,7 +44,7 @@ public class BoardServiceImpl implements  BoardService{
     }
 
 
-=======
+
     //판매상품수정
     @Transactional
     @Override
@@ -52,6 +52,4 @@ public class BoardServiceImpl implements  BoardService{
         Board board = boardRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException(" 게시글이 존재하지 않습니다."));
         return new CreateSalePostResponseDto(board);
     }
-
->>>>>>> Stashed changes
 }

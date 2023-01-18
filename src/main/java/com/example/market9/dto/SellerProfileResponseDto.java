@@ -27,6 +27,14 @@ public class SellerProfileResponseDto {
         //10만 동시 .....성 굴러만가자 ..일단 .....
     }//
 
+    public SellerProfileResponseDto(Profile profile) {
+        this.username = profile.getUsername();
+        this.nickname = profile.getNickname();
+        this.introduce = profile.getIntroduce();
+        this.category = profile.getCategory();
+        this.image = profile.getImage();
+    }
+
 /*
 
  JSON...
