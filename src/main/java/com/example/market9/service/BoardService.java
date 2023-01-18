@@ -14,7 +14,7 @@ public interface BoardService {
 
              ResponseEntity<String> deleteSalePost(Long productId);
 
-    public CreateSalePostResponseDto updateSalePost(Long id, SalePostRequestDto salePostRequestDto);
+    CreateSalePostResponseDto editSalePost(Long productId, SalePostRequestDto salePostRequestDto);
 
      void requestSeller(Long productId, RequestSellerDto requestSellerDto/*,String name*/);
 }

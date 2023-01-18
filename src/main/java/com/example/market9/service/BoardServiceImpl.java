@@ -48,11 +48,10 @@ public class BoardServiceImpl implements  BoardService{
     }
 
 
-
     //판매상품수정
     @Transactional
     @Override
-    public CreateSalePostResponseDto updateSalePost(Long productId, SalePostRequestDto salePostRequestDto){
+    public CreateSalePostResponseDto editSalePost(Long productId, SalePostRequestDto salePostRequestDto){
         Board board = boardRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException(" 게시글이 존재하지 않습니다."));
         return new CreateSalePostResponseDto(board);
     }
