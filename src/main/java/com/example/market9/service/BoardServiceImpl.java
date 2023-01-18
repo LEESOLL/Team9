@@ -31,6 +31,7 @@ public class BoardServiceImpl implements  BoardService{
 
     // 나중에...예외처리 적용할때 .. 수정
     @Override
+    @Transactional
     public ResponseEntity<String> deleteSalePost(Long productId) {
 
         if(existsById(productId)) {
