@@ -35,6 +35,7 @@ public class BoardServiceImpl implements  BoardService{
 
         if(existsById(productId)) {
             boardRepository.deleteById(productId);
+            purchaseRequestRepository.deleteByProductId(productId);
             return new ResponseEntity<>("게시글삭제 완료했습니다", HttpStatus.OK);
         }else{
             return new ResponseEntity<>("게시글이 없습니다", HttpStatus.BAD_REQUEST); //@.....
