@@ -13,4 +13,6 @@ public interface BoardService {
 
              ResponseEntity<String> deleteSalePost(Long productId);
 
+    public CreateSalePostResponseDto updateSalePost(Long id, SalePostRequestDto salePostRequestDto);
+
 }

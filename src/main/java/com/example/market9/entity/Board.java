@@ -33,4 +33,16 @@ public class Board extends TimeStamp {
         this.price = salePostRequestDto.getPrice();
         this.status = salePostRequestDto.getStatus();
     }
+
+
+    // update 메소드
+    public void updateSalePost(Long id, SalePostRequestDto salePostRequestDto){
+        this.productName = salePostRequestDto.getProductName();
+        this.title = salePostRequestDto.getTitle();
+        this.content = salePostRequestDto.getContent();
+        this.price = salePostRequestDto.getPrice();
+        this.status = salePostRequestDto.getStatus();
+    }
+
+
 }

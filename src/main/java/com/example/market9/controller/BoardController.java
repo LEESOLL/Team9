@@ -27,6 +27,12 @@ public class BoardController {
     //판매상품조회
 
     //판매상품수정
+    @PutMapping("/{productId}")
+    public CreateSalePostResponseDto updateSalePost(@PathVariable Long productId, @RequestBody SalePostRequestDto salePostRequestDto){
+         return boardService.updateSalePost(productId, salePostRequestDto);
+    }
+    // CreateSalePostRequestDto, CreateSalePostResponseDto -> 공동으로 사용하게 Create 빼면 좋을 것 같아요.
+
 
     //판매상품삭제 /api/products/{productId
 /*    @DeleteMapping("/{productId}")
