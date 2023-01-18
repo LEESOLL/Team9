@@ -36,12 +36,13 @@ public class Board extends TimeStamp {
 
 
     // update 메소드
-    public void updateSalePost(Long id, SalePostRequestDto salePostRequestDto){
+    public void editSalePost(SalePostRequestDto salePostRequestDto){
         this.productName = salePostRequestDto.getProductName();
         this.title = salePostRequestDto.getTitle();
         this.content = salePostRequestDto.getContent();
         this.price = salePostRequestDto.getPrice();
         this.status = salePostRequestDto.getStatus();
+        //id도 가져와야 하나요?
     }
 
 
