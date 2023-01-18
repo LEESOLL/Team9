@@ -1,13 +1,16 @@
 package com.example.market9.service;
 
 
-import com.example.market9.dto.CreateSalePostRequestDto;
+import com.example.market9.dto.SalePostRequestDto;
 import com.example.market9.dto.CreateSalePostResponseDto;
+import org.springframework.http.ResponseEntity;
 
 
 public interface BoardService {
 
 
-    public CreateSalePostResponseDto createSalePost(CreateSalePostRequestDto creatSalePostRequestDto);
+    CreateSalePostResponseDto createSalePost(SalePostRequestDto creatSalePostRequestDto);
+
+             ResponseEntity<String> deleteSalePost(Long productId);
 
 }

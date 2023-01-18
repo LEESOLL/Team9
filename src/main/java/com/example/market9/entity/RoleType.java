@@ -18,9 +18,10 @@ public enum RoleType {
         return this.authority;
     }
 
-    public static class Authority {
+    public static class Authority {     ///시큐리티에서 ... 구분할려고..! 스트링값을 읽음... 11
         public static final String USER = "ROLE_USER";
         public static final String ADMIN = "ROLE_ADMIN";
         public static final String SELLER = "ROLE_SELLER";
     }
-}
+
+    }

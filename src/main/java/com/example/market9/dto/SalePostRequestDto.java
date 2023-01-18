@@ -3,7 +3,7 @@ package com.example.market9.dto;
 import lombok.Getter;
 
 @Getter
-public class CreateSalePostRequestDto {
+public class SalePostRequestDto {
 
 
     private String title;
@@ -16,6 +16,7 @@ public class CreateSalePostRequestDto {
 // ”productName” : “” ,
 // ”content” : “”,
 // ”price” : 00000,
-// ”status”: “”
+// ”status”: “..
+
 
 }
