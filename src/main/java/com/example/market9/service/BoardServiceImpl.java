@@ -1,10 +1,13 @@
 package com.example.market9.service;
 
 
+import com.example.market9.dto.RequestSellerDto;
 import com.example.market9.dto.SalePostRequestDto;
 import com.example.market9.dto.CreateSalePostResponseDto;
 import com.example.market9.entity.Board;
+import com.example.market9.entity.UserRequest;
 import com.example.market9.repository.BoardRepository;
+import com.example.market9.repository.PurchaseRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoardServiceImpl implements  BoardService{
 
     private final BoardRepository boardRepository;
-
+    private final PurchaseRequestRepository purchaseRequestRepository;
     @Transactional
     @Override
     public CreateSalePostResponseDto createSalePost(SalePostRequestDto salePostRequestDto) {
@@ -26,7 +29,6 @@ public class BoardServiceImpl implements  BoardService{
         return new CreateSalePostResponseDto(board);
     }
 
-<<<<<<< Updated upstream
     // 나중에...예외처리 적용할때 .. 수정
     @Override
     public ResponseEntity<String> deleteSalePost(Long productId) {
@@ -44,7 +46,7 @@ public class BoardServiceImpl implements  BoardService{
     }
 
 
-=======
+
     //판매상품수정
     @Transactional
     @Override
@@ -53,5 +55,13 @@ public class BoardServiceImpl implements  BoardService{
         return new CreateSalePostResponseDto(board);
     }
 
->>>>>>> Stashed changes
+
+
+    //(고객)판매자에게 요청폼 보내기
+    @Override
+    @Transactional
+    public void requestSeller(Long productId, RequestSellerDto requestSellerDto/*, String name*/) {
+        UserRequest userRequest = new UserRequest(requestSellerDto,productId/*,name*/);
+        purchaseRequestRepository.save(userRequest);
+    }
 }

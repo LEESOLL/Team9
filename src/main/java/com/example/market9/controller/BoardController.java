@@ -1,11 +1,13 @@
 package com.example.market9.controller;
 
 
+import com.example.market9.dto.RequestSellerDto;
 import com.example.market9.dto.SalePostRequestDto;
 import com.example.market9.dto.CreateSalePostResponseDto;
 import com.example.market9.service.BoardService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,8 +45,19 @@ public class BoardController {
     @DeleteMapping("/{productId}")
     public ResponseEntity<String> deleteSalePost(@PathVariable Long productId) {
 
-    return  boardService.deleteSalePost(productId);
+    return  boardService.deleteSalePost(productId); //인증은 앞단에서..했다고 가정하니까....
     }
     //고객요청 목록 조회
 
+
+
+
+    //(고객) 판매자에게 요청폼 보내기
+    @PostMapping("/{productId}/request")
+    public ResponseEntity<String> requestSeller(@PathVariable Long productId, @RequestBody RequestSellerDto requestSellerDto/*String username*/){
+
+        boardService.requestSeller(productId,requestSellerDto/*,username*/);
+
+        return  new ResponseEntity<> ("요청 완료 되었습니다", HttpStatus.OK);
+    }
 }
