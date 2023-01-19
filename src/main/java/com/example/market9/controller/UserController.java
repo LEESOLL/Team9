@@ -47,4 +47,13 @@ public class UserController {
     public ProfileResponseDto getMyProfile(@PathVariable Long id) {
         return userServiceImpl.getMyProfile(id);
     }
+
+
+    // 5. 판매자 등록 요청 보내기
+    @PostMapping("/auth/seller")
+    public String applySeller(@RequestBody SellerProfileRequestDto sellerProfileRequestDto) {
+        userServiceImpl.applySeller(sellerProfileRequestDto);
+        return "요청 완료";
+    }
+
 }

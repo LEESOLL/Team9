@@ -20,19 +20,19 @@ public class SellerController {
 
     private final SellerServiceImpl sellerServiceImpl;
 
-    // 5. 전체 판매자 목록 조회
+    // 1. 전체 판매자 목록 조회
     @GetMapping("/sellers")
     public List<SellerResponseDto> getSellerList() {
         return sellerServiceImpl.getSellerList();
     }
 
-    // 6. 판매자 정보 조회
+    // 2. 판매자 정보 조회
     @GetMapping("/sellers/{id}")
     public SellerProfileResponseDto getSellerProfile(@PathVariable Long id) {
         return sellerServiceImpl.getSellerProfile(id);
     }
 
-    // 7. 판매자 자신의 프로필 변경
+    // 3. 판매자 자신의 프로필 변경
     @PutMapping("/sellers/{id}")
     public Long changeSellerProfile(@PathVariable Long id, @RequestBody SellerProfileRequestDto sellerProfileRequestDto) {
         return sellerServiceImpl.changeSellerProfile(id, sellerProfileRequestDto);
