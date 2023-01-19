@@ -30,6 +30,14 @@ public class UserRequest extends TimeStamp {
         this.status = status;
         this.sellerName = sellerName;
     }
+
+    /**
+     * 거래 요청 승낙시 true로 바꿔주기 위한 메소드
+     * @param status false->true로 바뀔것..
+     */
+    public void acceptDeal(boolean status){
+        this.status =status;
+    }
 }
    //[C-S-R]
 /*

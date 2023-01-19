@@ -13,7 +13,6 @@ import javax.persistence.*;
  */
 @Getter
 @Entity
-
 @NoArgsConstructor
 public class Board extends TimeStamp {
     @Id
@@ -44,6 +43,8 @@ public class Board extends TimeStamp {
         this.content = salePostRequestDto.getContent();
         this.price = salePostRequestDto.getPrice();
         this.status = status;
+        //왜 Dto를 여기서 get하면 안되는지 아는가?
+        //?
 
         //-----------userName은 시큐리티에서 받아오는걸로 바꾸궈야함------------//
         this.userName =salePostRequestDto.getUserName();
@@ -59,6 +60,10 @@ public class Board extends TimeStamp {
         this.content = salePostRequestDto.getContent();
         this.price = salePostRequestDto.getPrice();
         //this.status = salePostRequestDto.getSaleStatusEnum();
+    }
+
+    public void soldOut(SaleStatusEnum status){
+        this.status = status;
     }
 
 
