@@ -45,5 +45,8 @@ public class Users extends TimeStamp{  // User가  JPA 예약어로 등록되어
         this.nickname = nickname;
         this.role = role;
     }
+    public void changeRole(UserRoleEnum role) {
+        this.role = role;
+    }
 
 }
