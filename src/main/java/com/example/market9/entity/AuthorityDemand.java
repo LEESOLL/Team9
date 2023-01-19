@@ -1,6 +1,5 @@
 package com.example.market9.entity;
 
-import com.example.market9.dto.SellerProfileRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class AuthorityRequest {
+public class AuthorityDemand {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,12 +27,21 @@ public class AuthorityRequest {
     private PermissionStatusEnum role;
 
 
-    public AuthorityRequest(String username, String category, String introduce) {
+    public AuthorityDemand(String username, String category, String introduce) {
         this.username = username;
         this.category = category;
         this.introduce = introduce;
         this.role = PermissionStatusEnum.WAITING;
 
+    }
+    public void changePermission(PermissionStatusEnum role) {
+        this.role = role;
+    }
+    public void updateAuthorityDemand(String username, String category, String introduce) {
+        this.username = username;
+        this.category = category;
+        this.introduce = introduce;
+        this.role = PermissionStatusEnum.WAITING;
     }
 
 }
