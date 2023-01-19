@@ -1,5 +1,6 @@
 package com.example.market9.dto;
 
+import com.example.market9.entity.SaleStatusEnum;
 import lombok.Getter;
 
 @Getter
@@ -11,7 +12,7 @@ public class SalePostRequestDto {
     private String productName;
     private String content;
     private Long price;
-    private String status;
+    private SaleStatusEnum saleStatusEnum;
 
 // ”title” : “”,
 // ”productName” : “” ,
