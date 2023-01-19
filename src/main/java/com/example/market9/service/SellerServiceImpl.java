@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +25,8 @@ public class SellerServiceImpl implements SellerService {
     @Transactional // 전체 판매자 목록 조회
     public List<SellerResponseDto> getSellerList() {
         List<Users> sellersList = userRepository.findAllByRole(UserRoleEnum.SELLER);
-        List<SellerResponseDto> sellerResponseDtoList = new ArrayList<>();
-        for(Users seller : sellersList) {
-            SellerResponseDto sellerResponseDto = new SellerResponseDto(seller);
-            sellerResponseDtoList.add(sellerResponseDto);
-        }
+        List<SellerResponseDto> sellerResponseDtoList = sellersList.stream().map(x -> new SellerResponseDto(x)).collect(Collectors.toList());
+
         return sellerResponseDtoList;
     }
 
