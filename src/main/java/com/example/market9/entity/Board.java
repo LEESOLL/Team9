@@ -24,9 +24,16 @@ public class Board extends TimeStamp {
     private String title; // "~팝니다."
     private String content; //상품소개
     private Long price;
+
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
-    private SaleStatusEnum status; //? 이넘으로 하는
+    private SaleStatusEnum status; //? 이넘으로 하는으로 하는
+
+    private String userName;
+
+
+
+
 
 
 
@@ -37,6 +44,11 @@ public class Board extends TimeStamp {
         this.content = salePostRequestDto.getContent();
         this.price = salePostRequestDto.getPrice();
         this.status = status;
+
+        //-----------userName은 시큐리티에서 받아오는걸로 바꾸궈야함------------//
+        this.userName =salePostRequestDto.getUserName();
+        //-----------userName은 시큐리티에서 받아오는걸로 바꾸궈야함------------//
+
     }
 
 
