@@ -26,7 +26,10 @@ public class Board extends TimeStamp {
     private String status; //? 이넘으로 하는
 
 
-
+    // Foreign Key
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private Users user;
 
 
 
