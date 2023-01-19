@@ -1,10 +1,9 @@
 package com.example.market9.service;
 
 import com.example.market9.dto.*;
-import com.example.market9.entity.Profile;
-import com.example.market9.entity.UserRoleEnum;
-import com.example.market9.entity.Users;
+import com.example.market9.entity.*;
 import com.example.market9.jwt.JwtUtil;
+import com.example.market9.repository.AuthorityDemandRepository;
 import com.example.market9.repository.ProfileRepository;
 import com.example.market9.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,6 +19,7 @@ import java.util.Optional;
 public class UserServiceImpl {
 
     private final UserRepository userRepository;
+    private final AuthorityDemandRepository authorityDemandRepository;
 
     private final JwtUtil jwtUtil;
 
@@ -55,10 +52,10 @@ public class UserServiceImpl {
         }
 
         Users user = new Users(username, password, nickname, role);
-        Users seller = new Users(username, password, nickname, UserRoleEnum.SELLER);
+//        Users seller = new Users(username, password, nickname, UserRoleEnum.SELLER);
         Profile profile = new Profile(username, nickname, image);
         userRepository.save(user);
-        userRepository.save(seller);
+//        userRepository.save(seller);
         profileRepository.save(profile);
 
     }
@@ -104,6 +101,39 @@ public class UserServiceImpl {
         Profile profile = profileRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         return new ProfileResponseDto(profile);
     }
+
+    @Transactional // admin 에게 seller 권한 요청 보내기
+    public String applySeller(SellerProfileRequestDto sellerProfileRequestDto) {
+        String username = sellerProfileRequestDto.getUsername();
+        String category = sellerProfileRequestDto.getCategory();
+        String introduce = sellerProfileRequestDto.getIntroduce();
+
+        Optional<AuthorityDemand> foundAuthorityDemand = authorityDemandRepository.findByUsername(username);
+        Optional<Users> foundUser = userRepository.findByUsername(username);
+        UserRoleEnum role = foundUser.get().getRole();
+        if (role == UserRoleEnum.SELLER) {
+            throw new IllegalArgumentException("이미 판매자로 등록된 유저입니다.");
+        }
+        else if (role == UserRoleEnum.ADMIN) {
+            throw new IllegalArgumentException("ADMIN 계정입니다. 요청이 불가합니다.");
+        }
+
+        if (foundAuthorityDemand.isPresent()) {
+            if (foundAuthorityDemand.get().getRole().equals(PermissionStatusEnum.WAITING)) {
+                throw new IllegalArgumentException("이미 전송된 요청입니다.");
+            } else if(foundAuthorityDemand.get().getRole().equals(PermissionStatusEnum.REFUSE)) {
+                foundAuthorityDemand.get().updateAuthorityDemand(username, category, introduce);
+                return username;
+            }
+        }
+
+        AuthorityDemand authorityDemand = new AuthorityDemand(username, category, introduce);
+        authorityDemandRepository.save(authorityDemand);
+
+        return username;
+
+    }
+
 
 }
 
