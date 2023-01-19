@@ -14,6 +14,8 @@ public class SalePostRequestDto {
     private Long price;
     private SaleStatusEnum saleStatusEnum;
 
+
+    private String userName; //나중가서 시큐리티쪽에서 뽑아오면 삭제해야함 !
 // ”title” : “”,
 // ”productName” : “” ,
 // ”content” : “”,

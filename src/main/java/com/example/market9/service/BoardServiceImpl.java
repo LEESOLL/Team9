@@ -1,9 +1,7 @@
 package com.example.market9.service;
 
 
-import com.example.market9.dto.RequestSellerDto;
-import com.example.market9.dto.SalePostRequestDto;
-import com.example.market9.dto.CreateSalePostResponseDto;
+import com.example.market9.dto.*;
 import com.example.market9.entity.Board;
 import com.example.market9.entity.SaleStatusEnum;
 import com.example.market9.entity.UserRequest;
@@ -15,21 +13,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
-public class BoardServiceImpl implements  BoardService{
+public class BoardServiceImpl implements  BoardService {
 
     private final BoardRepository boardRepository;
+    private final RequestService requestService;
+
     private final PurchaseRequestRepository purchaseRequestRepository;
+
     @Transactional
     @Override
     public CreateSalePostResponseDto createSalePost(SalePostRequestDto salePostRequestDto) {
+
         SaleStatusEnum status = SaleStatusEnum.SALE;
         Board board = new Board(salePostRequestDto, status);
         boardRepository.save(board);
-
-
-        //UserRoleEnum role = UserRoleEnum.USER;
+        
+        //UserRoleEnum role = UserRoleEnum.USE
         return new CreateSalePostResponseDto(board);
     }
 
@@ -39,40 +43,26 @@ public class BoardServiceImpl implements  BoardService{
     @Transactional
     public ResponseEntity<String> deleteSalePost(Long productId) {
 
-        if(existsById(productId)) {
+        if (existsById(productId)) {
             boardRepository.deleteById(productId);
-            purchaseRequestRepository.deleteByProductId(productId);
+            requestService.deleteUserRequest(productId);
             return new ResponseEntity<>("게시글삭제 완료했습니다", HttpStatus.OK);
-        }else{
+        } else {
             return new ResponseEntity<>("게시글이 없습니다", HttpStatus.BAD_REQUEST); //@.....
         }
     }
 
-    public boolean existsById(Long productId){
-      return boardRepository.existsById(productId);
+
+    public boolean existsById(Long productId) {
+        return boardRepository.existsById(productId);
     }
-
-
 
     //판매상품수정
     @Transactional
     @Override
-    public CreateSalePostResponseDto editSalePost(Long productId, SalePostRequestDto salePostRequestDto){
+    public CreateSalePostResponseDto editSalePost(Long productId, SalePostRequestDto salePostRequestDto) {
         Board board = boardRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException(" 게시글이 존재하지 않습니다."));
         board.editSalePost(productId,salePostRequestDto);
         return new CreateSalePostResponseDto(board);
     }
-
-
-
-
-    //(고객)판매자에게 요청폼 보내기
-    @Override
-    @Transactional
-    public void requestSeller(Long productId, RequestSellerDto requestSellerDto/*, String name*/) {
-        Boolean status = false;
-        UserRequest userRequest = new UserRequest(requestSellerDto,productId/*,name*/,status);
-        purchaseRequestRepository.save(userRequest);
-    }
-
 }

@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class UserRequest {
+public class UserRequest extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Request_Id")
@@ -21,11 +21,21 @@ public class UserRequest {
 
     private boolean status;
 
-    public UserRequest(RequestSellerDto requestSellerDto, Long productId/*, String userName*/,Boolean status) {
+    private String sellerName;
+
+    public UserRequest(RequestSellerDto requestSellerDto, Long productId/*, String userName*/,Boolean status ,String sellerName) {
         this.requestContent = requestSellerDto.getRequestContent();
         this.productId = productId;
         this.userName = requestSellerDto.getUserName();
         this.status = status;
+        this.sellerName = sellerName;
     }
 }
+   //[C-S-R]
+/*
+진재혁 1 ,2 ,3  MAP    [key > 게시글아이디> value 요청리스트]
 
+[[요청,요청],[요청,여청],[,ㅊ영쳐여쳥ㅊ] < 고민한흔적
+
+게시글 id
+id 욤ㄴㅇ리ㅏㅁㅇ너리ㅏㅁㄴ어개첵객리스트 ..*/

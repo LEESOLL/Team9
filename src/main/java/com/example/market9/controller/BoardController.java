@@ -1,10 +1,9 @@
 package com.example.market9.controller;
 
 
-import com.example.market9.dto.RequestSellerDto;
-import com.example.market9.dto.SalePostRequestDto;
-import com.example.market9.dto.CreateSalePostResponseDto;
+import com.example.market9.dto.*;
 import com.example.market9.service.BoardService;
+import com.example.market9.service.RequestService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,9 +18,11 @@ public class BoardController {
 
      private final BoardService boardService;
 
+     private final RequestService requestService;
+
     //판매 게시글 등록
      @PostMapping("/")
-     public CreateSalePostResponseDto createSalePost(@RequestBody SalePostRequestDto salePostRequestDto /* @AuthenticationPrincipal UserDetailsImpl userDetails)*/) {
+     public CreateSalePostResponseDto createSalePost(@RequestBody SalePostRequestDto salePostRequestDto/* @AuthenticationPrincipal UserDetailsImpl userDetails)*/) {
 
      return boardService.createSalePost(salePostRequestDto);
      }
@@ -52,12 +53,23 @@ public class BoardController {
 
 
 
-    //(고객) 판매자에게 요청폼 보내기
+    //(고객) 판매자에게 요청폼 보내기  //1번게시글에서 ..
     @PostMapping("/{productId}/request")
     public ResponseEntity<String> requestSeller(@PathVariable Long productId, @RequestBody RequestSellerDto requestSellerDto/*String username*/){
 
-        boardService.requestSeller(productId,requestSellerDto/*,username*/);
+        requestService.requestSeller(productId,requestSellerDto/*,username*/);
 
         return  new ResponseEntity<> ("요청 완료 되었습니다", HttpStatus.OK);
+    }
+
+    @GetMapping("/{productId}/request") //게시글에 들어온 요청보기
+    public RequestSellerListResponseDto getRequestSellerList(@PathVariable Long productId){
+
+        return  requestService.getRequestSellerList(productId);
+    }
+    @GetMapping("/request")  //전체요청보기 ..,
+    public RequestSellerListResponseDto getRequestAllSellerList(@RequestBody OnlyUserNameDto userName){  //시큐리티 적용시 바뀔사항...유저네임꺼내기 !
+
+        return  requestService.getRequestAllSellerList(userName.getUserName());
     }
 }
