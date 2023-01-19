@@ -5,6 +5,7 @@ import com.example.market9.dto.RequestSellerDto;
 import com.example.market9.dto.SalePostRequestDto;
 import com.example.market9.dto.CreateSalePostResponseDto;
 import com.example.market9.entity.Board;
+import com.example.market9.entity.SaleStatusEnum;
 import com.example.market9.entity.UserRequest;
 import com.example.market9.repository.BoardRepository;
 import com.example.market9.repository.PurchaseRequestRepository;
@@ -23,9 +24,12 @@ public class BoardServiceImpl implements  BoardService{
     @Transactional
     @Override
     public CreateSalePostResponseDto createSalePost(SalePostRequestDto salePostRequestDto) {
-        Board board = new Board(salePostRequestDto);
+        SaleStatusEnum status = SaleStatusEnum.SALE;
+        Board board = new Board(salePostRequestDto, status);
         boardRepository.save(board);
 
+
+        //UserRoleEnum role = UserRoleEnum.USER;
         return new CreateSalePostResponseDto(board);
     }
 
