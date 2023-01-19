@@ -43,7 +43,8 @@ public class UserServiceImpl {
 
         String nickname = signUpRequestDto.getNickname();
         // 사용자 Role 확인
-        UserRoleEnum role = UserRoleEnum.USER;
+        UserRoleEnum role = UserRoleEnum.USER;//
+
         if (signUpRequestDto.isAdmin()) {
             if (!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
                 throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
