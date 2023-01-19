@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Getter
 @RequiredArgsConstructor
@@ -22,12 +24,24 @@ public class BoardController {
 
     //판매 게시글 등록
      @PostMapping("/")
-     public CreateSalePostResponseDto createSalePost(@RequestBody SalePostRequestDto salePostRequestDto/* @AuthenticationPrincipal UserDetailsImpl userDetails)*/) {
-
-     return boardService.createSalePost(salePostRequestDto);
+     public CreateSalePostResponseDto createSalePost(@RequestBody SalePostRequestDto salePostRequestDto /* @AuthenticationPrincipal UserDetailsImpl userDetails)*/) {
+        return boardService.createSalePost(salePostRequestDto);
      }
 
-    //판매상품조회
+    // 판매상품조회 ( 특정 판매자의 판매 게시물들 가져오기 )
+    // 개선점 : Spring Security 활용해서, user 객체 가져와서 query 해와야함.
+    @GetMapping("/{sellerId}")
+    public GetSalePostsResponseDto<List<GetSalePostsDto>> getSalePosts(@PathVariable Long sellerId){
+         return boardService.getSalePosts(sellerId);
+    }
+
+    // 판매상품조회 ( 모든 판매상품 조회 )
+    @GetMapping("/")
+    public GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts(){
+         return boardService.getAllSalePosts();
+    }
+
+
 
 
     //판매상품수정

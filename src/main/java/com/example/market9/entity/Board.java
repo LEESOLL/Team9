@@ -31,7 +31,10 @@ public class Board extends TimeStamp {
     private String userName;
 
 
-
+    // Foreign Key
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private Users user;
 
 
 
