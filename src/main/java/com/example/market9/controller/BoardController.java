@@ -43,6 +43,7 @@ public class BoardController {
 
 
 
+
     //판매상품수정
     @PutMapping("/{productId}")
     public CreateSalePostResponseDto editSalePost(@PathVariable Long productId, @RequestBody SalePostRequestDto salePostRequestDto){
@@ -57,33 +58,10 @@ public class BoardController {
          boardService.deletesalePost(productId);
         return new ResponseEntity<> ("게시글삭제 완료했습니다",HttpStatus.OK); //지니어스 ?
     }*/
+
     @DeleteMapping("/{productId}")
     public ResponseEntity<String> deleteSalePost(@PathVariable Long productId) {
 
     return  boardService.deleteSalePost(productId); //인증은 앞단에서..했다고 가정하니까....
-    }
-    //고객요청 목록 조회
-
-
-
-
-    //(고객) 판매자에게 요청폼 보내기  //1번게시글에서 ..
-    @PostMapping("/{productId}/request")
-    public ResponseEntity<String> requestSeller(@PathVariable Long productId, @RequestBody RequestSellerDto requestSellerDto/*String username*/){
-
-        requestService.requestSeller(productId,requestSellerDto/*,username*/);
-
-        return  new ResponseEntity<> ("요청 완료 되었습니다", HttpStatus.OK);
-    }
-
-    @GetMapping("/{productId}/request") //게시글에 들어온 요청보기
-    public RequestSellerListResponseDto getRequestSellerList(@PathVariable Long productId){
-
-        return  requestService.getRequestSellerList(productId);
-    }
-    @GetMapping("/request")  //전체요청보기 ..,
-    public RequestSellerListResponseDto getRequestAllSellerList(@RequestBody OnlyUserNameDto userName){  //시큐리티 적용시 바뀔사항...유저네임꺼내기 !
-
-        return  requestService.getRequestAllSellerList(userName.getUserName());
     }
 }

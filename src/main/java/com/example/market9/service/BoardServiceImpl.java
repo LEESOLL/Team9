@@ -4,11 +4,13 @@ package com.example.market9.service;
 import com.example.market9.dto.*;
 import com.example.market9.entity.Board;
 import com.example.market9.entity.SaleStatusEnum;
+
 import com.example.market9.entity.UserRequest;
 import com.example.market9.entity.Users;
 import com.example.market9.repository.BoardRepository;
 import com.example.market9.repository.PurchaseRequestRepository;
 import com.example.market9.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +21,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImpl implements  BoardService {
 
     private final BoardRepository boardRepository;
     private final RequestService requestService;
-
-    private final PurchaseRequestRepository purchaseRequestRepository;
 
     @Transactional
     @Override
