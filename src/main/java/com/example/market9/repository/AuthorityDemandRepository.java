@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface AuthorityRequestRepository extends JpaRepository<AuthorityDemand, Long> {
+public interface AuthorityDemandRepository extends JpaRepository<AuthorityDemand, Long> {
 
     Optional<AuthorityDemand> findByUsername(String username);
+
 }
