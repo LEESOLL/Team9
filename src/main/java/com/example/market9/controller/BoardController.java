@@ -35,8 +35,21 @@ public class BoardController {
     // 판매상품조회 ( 특정 판매자의 판매 게시물들 가져오기 )
     // 개선점 : Spring Security 활용해서, user 객체 가져와서 query 해와야함.
     @GetMapping("/{sellerId}")
-    public GetSalePostsResponseDto<List<GetSalePostsDto>> getSalePosts(@PathVariable Long sellerId) {
-         return boardService.getSalePosts(sellerId);
+    public GetSalePostsResponseDto<List<GetSalePostsDto>> getSalePosts(
+            @PathVariable Long sellerId,
+            @RequestParam(value = "page",required = false,defaultValue ="1") Integer page,
+            @RequestParam(value = "size",required = false,defaultValue = "2") Integer size,
+            @RequestParam(value = "isAsc",required = false,defaultValue = "false")Boolean isAsc,
+            @RequestParam(value = "sortBy",required = false,defaultValue = "createdAt")String sortBy
+    ) {
+
+
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC:Sort.Direction.DESC;
+        Sort sort = Sort.by(direction,sortBy);
+        Pageable pageRequest = PageRequest.of(page-1,size,sort);
+
+
+         return boardService.getSalePosts(sellerId,pageRequest);
     }
 
     // 판매상품조회 ( 모든 판매상품 조회 )
