@@ -14,7 +14,7 @@ public interface BoardService {
     CreateSalePostResponseDto createSalePost(SalePostRequestDto creatSalePostRequestDto);
 
 
-    GetSalePostsResponseDto<List<GetSalePostsDto>> getSalePosts(Long sellerId);
+    GetSalePostsResponseDto<List<GetSalePostsDto>> getSalePosts(Long sellerId,Pageable pageRequest);
 
     GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts( Pageable pageRequest);
 

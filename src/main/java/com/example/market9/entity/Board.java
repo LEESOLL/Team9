@@ -39,7 +39,7 @@ public class Board extends TimeStamp {
 
 
 
-    public Board(SalePostRequestDto salePostRequestDto, SaleStatusEnum status) {
+    public Board(SalePostRequestDto salePostRequestDto, SaleStatusEnum status ,Users users) {
         this.id = salePostRequestDto.getId();
         this.productName = salePostRequestDto.getProductName();
         this.title = salePostRequestDto.getTitle();
@@ -51,6 +51,7 @@ public class Board extends TimeStamp {
 
         //-----------userName은 시큐리티에서 받아오는걸로 바꾸궈야함------------//
         this.userName =salePostRequestDto.getUserName();
+        this.user = users;
         //-----------userName은 시큐리티에서 받아오는걸로 바꾸궈야함------------//
 
     }
