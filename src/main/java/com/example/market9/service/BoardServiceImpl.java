@@ -28,6 +28,8 @@ public class BoardServiceImpl implements  BoardService {
     private final BoardRepository boardRepository;
     private final RequestService requestService;
 
+    private final UserRepository userRepository;
+
     @Transactional
     @Override
     public CreateSalePostResponseDto createSalePost(SalePostRequestDto salePostRequestDto) {
