@@ -6,6 +6,9 @@ import com.example.market9.dto.UserListResponseDto;
 import com.example.market9.entity.AuthorityDemand;
 import com.example.market9.service.AdminServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,8 +34,17 @@ public class AdminController {
 
     // 전체 유저 정보 조회
     @GetMapping("/users")
-    public List<UserListResponseDto> getUserList() {
-        return adminServiceImpl.getUserList();
+    public List<UserListResponseDto> getUserList(
+            @RequestParam(value = "page",required = false,defaultValue ="1") Integer page,
+            @RequestParam(value = "size",required = false,defaultValue = "2") Integer size,
+            @RequestParam(value = "isAsc",required = false,defaultValue = "false")Boolean isAsc,
+            @RequestParam(value = "sortBy",required = false,defaultValue = "createdAt")String sortBy
+    ) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC:Sort.Direction.DESC;
+        Sort sort = Sort.by(direction,sortBy);
+        Pageable pageRequest = PageRequest.of(page-1,size,sort);
+
+        return adminServiceImpl.getUserList(pageRequest);
     }
 
     // 판매자 등록 요청목록 조회
