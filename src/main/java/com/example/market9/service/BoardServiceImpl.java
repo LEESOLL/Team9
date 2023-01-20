@@ -12,6 +12,8 @@ import com.example.market9.repository.PurchaseRequestRepository;
 import com.example.market9.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -84,11 +86,11 @@ public class BoardServiceImpl implements  BoardService {
 
     // 모든 판매 상품 조회
     @Override
-    public GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts(){
+    public GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts(Pageable pageRequest){
 
-        List<Board> boards = boardRepository.findAll();
+        Page<Board> boards = boardRepository.findAll(pageRequest);
 
-        // Board 객체 리스트를, DTO 리스트로 변환
+
         List<GetSalePostsDto> getSalePostsDto = boards.stream()
                 .map(GetSalePostsDto::new)
                 .collect(Collectors.toList());

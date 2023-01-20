@@ -64,7 +64,7 @@ public class UserRequestController {
             @RequestBody OnlyUserNameDto userName ,
             @RequestParam(value = "page",required = false,defaultValue ="1") Integer page,
             @RequestParam(value = "size",required = false,defaultValue = "2") Integer size,
-            @RequestParam(value = "isAsc",required = false,defaultValue = "true")Boolean isAsc,
+            @RequestParam(value = "isAsc",required = false,defaultValue = "false")Boolean isAsc,
             @RequestParam(value = "sortBy",required = false,defaultValue = "createdAt")String sortBy)
     {
         //시큐리티 적용시 바뀔사항...유저네임꺼내기 !
