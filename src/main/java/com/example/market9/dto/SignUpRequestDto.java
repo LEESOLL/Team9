@@ -1,5 +1,6 @@
 package com.example.market9.dto;
 
+import com.example.market9.entity.UserRoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
