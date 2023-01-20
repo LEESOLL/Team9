@@ -8,13 +8,13 @@ import com.example.market9.entity.UserRequest;
 import com.example.market9.repository.BoardRepository;
 import com.example.market9.repository.PurchaseRequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,13 +69,15 @@ public class RequestServiceImpl implements RequestService {
 
     /**
      * 판매자에게 온 모든 요청을 보여주는 메소드
-     * @param sellerName 판매자 이름이 들어간다 이건  믿는다..시큐리티...!!
+     *
+     * @param sellerName   판매자 이름이 들어간다 이건  믿는다..시큐리티...!!
+     * @param pageRequest  페이관리 객체
      * @return 리스트를 담아서 반환
      */
     @Override
     @Transactional
-    public RequestSellerListResponseDto getRequestAllSellerList(String sellerName) {
-        List<UserRequest> allByUserName = purchaseRequestRepository.findAllBySellerName(sellerName);
+    public RequestSellerListResponseDto getRequestAllSellerList(String sellerName, Pageable pageRequest) {
+        List<UserRequest> allByUserName = purchaseRequestRepository.findAllBySellerName(sellerName, pageRequest);
         return new RequestSellerListResponseDto(allByUserName);
     }
 

@@ -7,6 +7,9 @@ import com.example.market9.service.BoardService;
 import com.example.market9.service.RequestService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -56,9 +59,15 @@ public class UserRequestController {
      * @return PurchaseRequestRepository 에서  유저네임으로 조회 되는 값을 반환
      */
     @GetMapping("/request")  //전체요청보기 ..,
-    public RequestSellerListResponseDto getRequestAllSellerList(@RequestBody OnlyUserNameDto userName){  //시큐리티 적용시 바뀔사항...유저네임꺼내기 !
+    public RequestSellerListResponseDto getRequestAllSellerList(@RequestBody OnlyUserNameDto userName ,
+                                                                @RequestParam(value = "page",required = false,defaultValue ="1") Integer page,
+                                                                @RequestParam(value = "size",required = false,defaultValue = "2") Integer size
+                                                                ){  //시큐리티 적용시 바뀔사항...유저네임꺼내기 !
 
-        return  requestService.getRequestAllSellerList(userName.getUserName());
+
+        Pageable pageRequest = PageRequest.of(page-1,size);
+
+        return  requestService.getRequestAllSellerList(userName.getUserName(), pageRequest);
     }
 
 
@@ -76,3 +85,4 @@ public class UserRequestController {
     }
 
 }
+

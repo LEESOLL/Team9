@@ -22,6 +22,7 @@ public class BoardController {
 
      private final RequestService requestService;
 
+
     //판매 게시글 등록
      @PostMapping("/")
      public CreateSalePostResponseDto createSalePost(@RequestBody SalePostRequestDto salePostRequestDto /* @AuthenticationPrincipal UserDetailsImpl userDetails)*/) {

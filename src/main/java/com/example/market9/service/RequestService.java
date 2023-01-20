@@ -3,8 +3,9 @@ package com.example.market9.service;
 import com.example.market9.dto.RequestSellerDto;
 import com.example.market9.dto.RequestSellerListResponseDto;
 import com.example.market9.entity.UserRequest;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public interface RequestService {
     RequestSellerListResponseDto getRequestSellerList(Long productId);
 
 
-    RequestSellerListResponseDto getRequestAllSellerList(String userName);
+    RequestSellerListResponseDto getRequestAllSellerList(String userName, Pageable pageRequest);
 
 
 
