@@ -2,6 +2,7 @@ package com.example.market9.service;
 
 
 import com.example.market9.dto.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface BoardService {
 
     GetSalePostsResponseDto<List<GetSalePostsDto>> getSalePosts(Long sellerId);
 
-    GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts();
+    GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts( Pageable pageRequest);
 
 
     ResponseEntity<String> deleteSalePost(Long productId);
