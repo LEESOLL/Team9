@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class AdminController {
     }
 
     // 전체 유저 정보 조회
+
     @GetMapping("/users")
     public List<UserListResponseDto> getUserList(
             @RequestParam(value = "page",required = false,defaultValue ="1") Integer page,
@@ -42,6 +44,10 @@ public class AdminController {
     ) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC:Sort.Direction.DESC;
         Sort sort = Sort.by(direction,sortBy);
+
+        if (page<0){
+            page=1;
+        }
         Pageable pageRequest = PageRequest.of(page-1,size,sort);
 
         return adminServiceImpl.getUserList(pageRequest);

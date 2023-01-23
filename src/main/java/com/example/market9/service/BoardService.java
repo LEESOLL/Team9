@@ -16,7 +16,7 @@ public interface BoardService {
 
     GetSalePostsResponseDto<List<GetSalePostsDto>> getSalePosts(Long sellerId,Pageable pageRequest);
 
-    GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts( Pageable pageRequest);
+    GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts( Pageable pageRequest, String search);
 
 
     ResponseEntity<String> deleteSalePost(Long productId);
