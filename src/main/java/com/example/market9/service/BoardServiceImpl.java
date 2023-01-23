@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class BoardServiceImpl implements  BoardService {
 
@@ -33,8 +34,9 @@ public class BoardServiceImpl implements  BoardService {
 
     private final UserRepository userRepository;
 
-    @Transactional
+
     @Override
+    @Transactional(readOnly = true)  //업데이트 쿼리 날리는거 아니면 ... 더티채킹.......원... 값이 변경거는 비교 .. ~  //
     public CreateSalePostResponseDto createSalePost(SalePostRequestDto salePostRequestDto) {
 
 
@@ -94,12 +96,20 @@ public class BoardServiceImpl implements  BoardService {
 
     // 모든 판매 상품 조회
     @Override
-    public GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts(Pageable pageRequest){
+    public GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts(Pageable pageRequest,String search){
 
         Page<Board> boards = boardRepository.findAll(pageRequest);
 
+        String productName =search;
+        String title =search;
+        String content =search;
 
-        List<GetSalePostsDto> getSalePostsDto = boards.stream()
+        List<Board> searchBoards = boardRepository.findByProductNameContainingIgnoreCaseOrTitleContainingIgnoreCaseOrContentIsContainingIgnoreCase(
+                productName,title,content, pageRequest);
+
+        List<Board> oneSearch = boardRepository.findByProductNameContainingIgnoreCase(search, pageRequest);
+
+        List<GetSalePostsDto> getSalePostsDto = searchBoards.stream()
                 .map(GetSalePostsDto::new)
                 .collect(Collectors.toList());
 
