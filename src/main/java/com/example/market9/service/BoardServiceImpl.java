@@ -38,7 +38,7 @@ public class BoardServiceImpl implements  BoardService {
     private final RequestService requestService;
     private final UserRepository userRepository;
 
-    private final UserRepository userRepository;
+
 
 
     @Override

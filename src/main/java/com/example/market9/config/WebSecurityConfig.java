@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-@EnableGlobalMethodSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
 
 //    private final UserDetailsServiceImpl userDetailsService;
@@ -54,12 +54,13 @@ public class WebSecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests() // 이외의 모든 리퀘스트는 인증처리 하겠다는 의미
-                .antMatchers("/api/auth/seller/accept/**").hasAnyRole(UserRoleEnum.Authority.ADMIN)
-                .antMatchers("/api/auth/seller/refuse/**").hasAnyRole(UserRoleEnum.Authority.ADMIN)
-                .antMatchers("/api/auth/users").hasAnyRole(UserRoleEnum.Authority.ADMIN)
-                .antMatchers("/api/auth/seller").hasAnyRole(UserRoleEnum.Authority.ADMIN)
+                .antMatchers("/api/auth/seller/accept/**").hasAnyRole("ADMIN")
+                .antMatchers("/api/auth/seller/refuse/**").hasAnyRole("ADMIN")
+                .antMatchers("/api/auth/users").hasAnyRole("ADMIN")
+                .antMatchers("/api/auth/seller").permitAll()
                 .antMatchers("/api/auth/signup").permitAll()
                 .antMatchers("/api/auth/login").permitAll()
+                .antMatchers("/api/auth/product/**").permitAll()
                 .anyRequest().authenticated()
                 .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); //JWT 인증/인가를 사용하기 위한 설정
 
