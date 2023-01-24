@@ -10,6 +10,7 @@ import com.example.market9.repository.ProfileRepository;
 import com.example.market9.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 //import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,7 +30,7 @@ public class UserServiceImpl {
 
     private final JwtUtil jwtUtil;
 
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final ProfileRepository profileRepository;
 
     // ADMIN_TOKEN
@@ -45,7 +46,7 @@ public class UserServiceImpl {
         signUpRequestDto.setFilename(filename);
         signUpRequestDto.setFilepath("/files"+filename);
         String username = signUpRequestDto.getUsername();
-        String password = signUpRequestDto.getPassword();
+        String password = passwordEncoder.encode(signUpRequestDto.getPassword());
         String image = signUpRequestDto.getImage();
         String nickname = signUpRequestDto.getNickname();
 
@@ -55,6 +56,7 @@ public class UserServiceImpl {
         if(found.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }*/
+
 
         // 사용자 Role 확인
         UserRoleEnum role = UserRoleEnum.USER;
@@ -102,30 +104,21 @@ public class UserServiceImpl {
         if(!user.getPassword().equals(password)){
             throw new CustomException(ExceptionStatus.WRONG_PASSWORD);
         }
+
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
     }
-//    public SignUpResponseDto login(LoginRequestDto loginRequestDto) {
-//        User user = userRepository.findByUsername(loginRequestDto.getUsername()).orElseThrow(IllegalArgumentException::new);
-//        checkByUserPassword(loginRequestDto, user);
-//        user.updateRefreshToken(jwtTokenProvider.createRefreshToken());
-//        return SignUpResponseDto.of(user, jwtTokenProvider.createToken(user.getUsername()));
-//    }
-
-//    @Override // 비밀번호 체크
-//    public void checkByUserPassword(LoginRequestDto loginRequestDto, User user) {
-//        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword()))
-//            throw new RuntimeException(" 비밀번호가 틀렸습니다 다시한번 확인해주세요.");
-//    }
 
     @Transactional // 유저 자신의 프로필 변경
+
     public Long changeUserProfile(Long id, ProfileRequestDto profileRequestDto) {
         Users users = userRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_USERNAME));
         users.updateUser(profileRequestDto);
         userRepository.save(users);
         Profile profile = profileRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
+
         profile.updateUserProfile(profileRequestDto);
         profileRepository.save(profile);
-        return id;
+        return user.getId();
     }
 
     @Transactional // 유저 자신의 정보 조회
@@ -135,8 +128,8 @@ public class UserServiceImpl {
     }
 
     @Transactional // admin 에게 seller 권한 요청 보내기
-    public String applySeller(SellerProfileRequestDto sellerProfileRequestDto) {
-        String username = sellerProfileRequestDto.getUsername();
+    public String applySeller(SellerProfileRequestDto sellerProfileRequestDto, Users user) {
+        String username = sellerProfileRequestDto.getUsername(); //user.getUsername() 을 할 것인가 sellerProfileRequestDto.getUsername() 을 할것인가..
         String category = sellerProfileRequestDto.getCategory();
         String introduce = sellerProfileRequestDto.getIntroduce();
 

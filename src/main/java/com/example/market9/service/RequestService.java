@@ -3,6 +3,7 @@ package com.example.market9.service;
 import com.example.market9.dto.RequestSellerDto;
 import com.example.market9.dto.RequestSellerListResponseDto;
 import com.example.market9.entity.UserRequest;
+import com.example.market9.entity.Users;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public interface RequestService {
 
     //(고객)판매자에게 요청폼 보내기
 
-    ResponseEntity<String> requestSeller(Long productId, RequestSellerDto requestSellerDto/*, String name*/) ;
+    ResponseEntity<String> requestSeller(Long productId, RequestSellerDto requestSellerDto, Users user) ;
 
 
     RequestSellerListResponseDto getRequestSellerList(Long productId);

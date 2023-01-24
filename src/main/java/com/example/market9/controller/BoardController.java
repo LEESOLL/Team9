@@ -2,6 +2,7 @@ package com.example.market9.controller;
 
 
 import com.example.market9.dto.*;
+import com.example.market9.security.UserDetailsImpl;
 import com.example.market9.service.BoardService;
 import com.example.market9.service.RequestService;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -77,7 +79,6 @@ public class BoardController {
         Pageable pageRequest = PageRequest.of(page -1, size,sort);
         return pageRequest;
     }
-
 
     //판매상품수정
     @PutMapping("/{productId}")

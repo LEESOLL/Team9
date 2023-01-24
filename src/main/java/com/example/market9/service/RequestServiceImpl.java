@@ -5,6 +5,7 @@ import com.example.market9.dto.RequestSellerListResponseDto;
 import com.example.market9.entity.Board;
 import com.example.market9.entity.SaleStatusEnum;
 import com.example.market9.entity.UserRequest;
+import com.example.market9.entity.Users;
 import com.example.market9.exception.CustomException;
 import com.example.market9.exception.ExceptionStatus;
 import com.example.market9.repository.BoardRepository;
@@ -35,7 +36,7 @@ public class RequestServiceImpl implements RequestService {
      */
     @Transactional
     @Override
-    public ResponseEntity<String> requestSeller(Long productId, RequestSellerDto requestSellerDto/*, String name*/) {
+    public ResponseEntity<String> requestSeller(Long productId, RequestSellerDto requestSellerDto, Users user) {
 
         List<UserRequest> userAllRequests = getUserRequestList(productId);
 
@@ -49,7 +50,7 @@ public class RequestServiceImpl implements RequestService {
         Board board = getBoard(productId);
         String sellerName = board.getUserName();
 
-        UserRequest userRequests = new UserRequest(requestSellerDto, productId/*,name*/, status, sellerName);
+        UserRequest userRequests = new UserRequest(requestSellerDto, productId, user.getUsername(), status, sellerName);
         purchaseRequestRepository.save(userRequests);
 
         return new ResponseEntity<>("요청 완료 되었습니다", HttpStatus.OK);
@@ -64,8 +65,8 @@ public class RequestServiceImpl implements RequestService {
      */
     @Override
     @Transactional
-    public RequestSellerListResponseDto getRequestSellerList(Long productId) {
-        List<UserRequest> userRequests = getUserRequestList(productId);
+    public RequestSellerListResponseDto getRequestSellerList(Long productId, Users user) {
+        List<UserRequest> userRequests = getUserRequestList(productId, user);
         return new RequestSellerListResponseDto(userRequests);
     }
 

@@ -3,6 +3,7 @@ package com.example.market9.controller;
 import com.example.market9.dto.OnlyUserNameDto;
 import com.example.market9.dto.RequestSellerDto;
 import com.example.market9.dto.RequestSellerListResponseDto;
+import com.example.market9.security.UserDetailsImpl;
 import com.example.market9.service.BoardService;
 import com.example.market9.service.RequestService;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -37,11 +39,11 @@ public class UserRequestController {
      * @return ResponseEntitiy 활용해서 메세지와 status 상태표시
      */
     @PostMapping("/{productId}/request")
-    public ResponseEntity<String> requestSeller(@PathVariable Long productId, @RequestBody RequestSellerDto requestSellerDto/*String username*/){
+    public ResponseEntity<String> requestSeller(@PathVariable Long productId, @RequestBody RequestSellerDto requestSellerDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
 
 
         /*new ResponseEntity<> ("요청 완료 되었습니다", HttpStatus.OK);*/
-        return requestService.requestSeller(productId,requestSellerDto/*,username*/);
+        return requestService.requestSeller(productId,requestSellerDto, userDetails.getUser());
     }
 
     /**

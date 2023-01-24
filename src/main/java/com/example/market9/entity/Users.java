@@ -41,12 +41,12 @@ public class Users extends TimeStamp{  // User가  JPA 예약어로 등록되어
     @Column
     private String nickname;
 
-
     @Column
     private String image;
     //
     private  String filename;
     private String filepath;
+
 
 
     public Users(String username, String password, String nickname, String image, String filename, String filepath, UserRoleEnum role) {

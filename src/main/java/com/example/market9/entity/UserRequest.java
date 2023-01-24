@@ -23,7 +23,7 @@ public class UserRequest extends TimeStamp {
 
     private String sellerName;
 
-    public UserRequest(RequestSellerDto requestSellerDto, Long productId/*, String userName*/,Boolean status ,String sellerName) {
+    public UserRequest(RequestSellerDto requestSellerDto, Long productId, String userName, Boolean status ,String sellerName) {
         this.requestContent = requestSellerDto.getRequestContent();
         this.productId = productId;
         this.userName = requestSellerDto.getUserName();
