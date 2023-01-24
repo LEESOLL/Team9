@@ -21,14 +21,19 @@ public class UserRequest extends TimeStamp {
 
     private boolean status;
 
-    private String sellerName;
+//  private String sellerName; //회원 가입시 적는 아이디  중복 X ...*/
 
-    public UserRequest(RequestSellerDto requestSellerDto, Long productId, String userName, Boolean status ,String sellerName) {
+
+
+    @ManyToOne
+    private Users seller;
+
+    public UserRequest(RequestSellerDto requestSellerDto, Long productId, String userName, Boolean status ,Users seller) {
         this.requestContent = requestSellerDto.getRequestContent();
         this.productId = productId;
-        this.userName = requestSellerDto.getUserName();
+        this.userName = userName;
         this.status = status;
-        this.sellerName = sellerName;
+        this.seller = seller;
     }
 
     /**

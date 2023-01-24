@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Getter
 @RequiredArgsConstructor
-@RequestMapping("/api/products")    //CRUD
+@RequestMapping("/api/auth/products")    //CRUD
 public class BoardController {
 
      private final BoardService boardService;
@@ -29,33 +28,32 @@ public class BoardController {
 
 
     //판매 게시글 등록
-     @PostMapping("/")  //유저객체 필요
-     public CreateSalePostResponseDto createSalePost(@RequestBody SalePostRequestDto salePostRequestDto /* @AuthenticationPrincipal UserDetailsImpl userDetails)*/) {
-         return boardService.createSalePost(salePostRequestDto);
+     @PostMapping("/post")  //셀러만...
+     public CreateSalePostResponseDto createSalePost(@RequestBody SalePostRequestDto salePostRequestDto , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+         return boardService.createSalePost(salePostRequestDto,userDetails.getUser());
      }
 
     // 판매상품조회 ( 특정 판매자의 판매 게시물들 가져오기 )
     // 개선점 : Spring Security 활용해서, user 객체 가져와서 query 해와야함. 넵 !
     // 그러면 url이 겹치니까 .. PathBariable 삭제 하고 .. /profile
     //게시글은 게시글 번호 ...
-    // 셀러아이디를 ?
-    @GetMapping("/seller")
+    // 셀러아이디를 ?   // 판매자만.. 자기가 쓴글 보는거 .. !
+    @GetMapping("/sellerPost")   //시큐리티에서 ... 인증가 인가를 진짜 잘 구분했다면 .
     public GetSalePostsResponseDto<List<GetSalePostsDto>> getSalePosts(
-            @PathVariable Long sellerId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(value = "page",required = false,defaultValue ="1") Integer page,
             @RequestParam(value = "size",required = false,defaultValue = "2") Integer size,
             @RequestParam(value = "isAsc",required = false,defaultValue = "false")Boolean isAsc,
             @RequestParam(value = "sortBy",required = false,defaultValue = "createdAt")String sortBy
     ) {
-
-
         Pageable pageRequest = getPageable(page, size, isAsc, sortBy);
 
+        Long id = userDetails.getUser().getId();
 
-        return boardService.getSalePosts(sellerId,pageRequest);
+        return boardService.getSalePosts(id,pageRequest);
     }
 
-    // 판매상품조회 ( 모든 판매상품 조회 ) // ?고객만......
+    // 판매상품조회 ( 모든 판매상품 조회 ) // ?고객+셀러+어드민
     @GetMapping("/")
     public GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts(
             @RequestParam(value = "page",required = false,defaultValue ="1") Integer page,
@@ -82,8 +80,8 @@ public class BoardController {
 
     //판매상품수정
     @PutMapping("/{productId}")
-    public CreateSalePostResponseDto editSalePost(@PathVariable Long productId, @RequestBody SalePostRequestDto salePostRequestDto){
-         return boardService.editSalePost(productId, salePostRequestDto);
+    public CreateSalePostResponseDto editSalePost(@PathVariable Long productId, @RequestBody SalePostRequestDto salePostRequestDto,@AuthenticationPrincipal UserDetailsImpl userDetails){
+         return boardService.editSalePost(productId, salePostRequestDto,userDetails.getUser());
     }
     // CreateSalePostRequestDto, CreateSalePostResponseDto -> 공동으로 사용하게 Create 빼면 좋을 것 같아요.
 
@@ -96,7 +94,7 @@ public class BoardController {
     }*/
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<String> deleteSalePost(@PathVariable Long productId) {
-        return  boardService.deleteSalePost(productId); //인증은 앞단에서..했다고 가정하니까....
+    public ResponseEntity<String> deleteSalePost(@PathVariable Long productId,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return  boardService.deleteSalePost(productId,userDetails.getUser()); //인증은 앞단에서..했다고 가정하니까....
     }
 }

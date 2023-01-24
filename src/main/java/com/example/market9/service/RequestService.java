@@ -18,16 +18,16 @@ public interface RequestService {
 
     //(고객)판매자에게 요청폼 보내기
 
-    ResponseEntity<String> requestSeller(Long productId, RequestSellerDto requestSellerDto, Users user) ;
+    ResponseEntity<String> requestSeller(Long productId, RequestSellerDto requestSellerDto, Users users) ;
 
 
-    RequestSellerListResponseDto getRequestSellerList(Long productId);
+    RequestSellerListResponseDto getRequestSellerList(Long productId,Users users);
 
 
-    RequestSellerListResponseDto getRequestAllSellerList(String userName, Pageable pageRequest);
+    RequestSellerListResponseDto getRequestAllSellerList(Users seller, Pageable pageRequest);
 
 
 
     /* RequestSellerListResponseDto getRequestSellerList(Long productId);*/
-    ResponseEntity<String> purchaseConfirmation(Long requestId);
+    ResponseEntity<String> purchaseConfirmation(Long requestId , Users seller);
 }

@@ -5,7 +5,6 @@ import com.example.market9.dto.*;
 import com.example.market9.entity.Board;
 import com.example.market9.entity.SaleStatusEnum;
 
-import com.example.market9.entity.UserRequest;
 import com.example.market9.entity.Users;
 
 import com.example.market9.exception.CustomException;
@@ -13,7 +12,6 @@ import com.example.market9.exception.ExceptionStatus;
 
 
 import com.example.market9.repository.BoardRepository;
-import com.example.market9.repository.PurchaseRequestRepository;
 import com.example.market9.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,14 +21,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class BoardServiceImpl implements  BoardService {
 
@@ -38,23 +33,21 @@ public class BoardServiceImpl implements  BoardService {
     private final RequestService requestService;
     private final UserRepository userRepository;
 
-
-
-
     @Override
-    @Transactional(readOnly = true)  //업데이트 쿼리 날리는거 아니면 ... 더티채킹.......원... 값이 변경거는 비교 .. ~  //
-    public CreateSalePostResponseDto createSalePost(SalePostRequestDto salePostRequestDto) {
+    @Transactional  //업데이트 쿼리 날리는거 아니면 ... 더티채킹.......원... 값이 변경거는 비교 .. ~  //
+    public CreateSalePostResponseDto createSalePost(SalePostRequestDto salePostRequestDto,Users users) {
 
 
-        ///----------시큐리티 나오면 없어질 내용 ..... 유저 객체를  꺼내오기 위한 과정이다 -----//
+       /* ///----------시큐리티 나오면 없어질 내용 ..... 유저 객체를  꺼내오기 위한 과정이다 -----//
         String userName = salePostRequestDto.getUserName();
 
         Users sampleUser = userRepository.findByUsername(userName).orElseThrow(()-> new IllegalArgumentException("유저없음"));
-        ///------------------------------------------------------------------------------------------------------------///
+        ///------------------------------------------------------------------------------------------------------------///*/
 
         SaleStatusEnum status = SaleStatusEnum.SALE;
-        Board board = new Board(salePostRequestDto, status,sampleUser);
+        Board board = new Board(salePostRequestDto, status,users);
         boardRepository.save(board);
+
 
         //UserRoleEnum role = UserRoleEnum.USE
         return new CreateSalePostResponseDto(board);
@@ -64,17 +57,16 @@ public class BoardServiceImpl implements  BoardService {
     // 나중에...예외처리 적용할때 .. 수정
     @Override
     @Transactional
-    public ResponseEntity<String> deleteSalePost(Long productId) {
-
-
+    public ResponseEntity<String> deleteSalePost(Long productId,Users users) {
+        Board board = boardRepository.findById(productId).orElseThrow(()-> new CustomException(ExceptionStatus.BOARD_NOT_EXIST));
         // 존재하면 -> 게시글 삭제 완료.
         // 존재하지 않는 아이디에 대한 삭제 요청? => Client 쪽 문제.
-        if (existsById(productId)) {
+        if (board.getUser().equals(users)) {
             boardRepository.deleteById(productId);
             requestService.deleteUserRequest(productId);
             return new ResponseEntity<>("게시글 삭제 완료했습니다", HttpStatus.OK);
         } else {
-            throw new CustomException(ExceptionStatus.BOARD_NOT_EXIST);
+            throw new CustomException(ExceptionStatus.WRONG_SELLER_ID_T0_BOARD);
 
         }
     }
@@ -137,16 +129,21 @@ public Result memberV2(){
 
     return new Result(collect.size(), collect);
 }
-<<<<<<< HEAD
+
     */
 
     //판매상품수정
     @Transactional
     @Override
-    public CreateSalePostResponseDto editSalePost(Long productId, SalePostRequestDto salePostRequestDto) {
+    public CreateSalePostResponseDto editSalePost(Long productId, SalePostRequestDto salePostRequestDto,Users users) {
+
         Board board = boardRepository.findById(productId).orElseThrow
                 (() -> new CustomException(ExceptionStatus.BOARD_NOT_EXIST));
-        board.editSalePost(productId,salePostRequestDto);
-        return new CreateSalePostResponseDto(board);
+        if(board.getUser().equals(users)){
+            board.editSalePost(productId,salePostRequestDto);
+            return new CreateSalePostResponseDto(board);
+
+        }throw new CustomException(ExceptionStatus.WRONG_SELLER_ID_T0_BOARD);
+
     }
 }

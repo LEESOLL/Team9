@@ -89,8 +89,10 @@ public class UserServiceImpl {
         );
         // 비밀번호 확인
         if(!passwordEncoder.matches(password, user.getPassword())){
+
             throw new CustomException(ExceptionStatus.WRONG_PASSWORD);
         }
+
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
     }
@@ -104,7 +106,7 @@ public class UserServiceImpl {
         Profile profile = profileRepository.findById(user.getId()).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
         profile.updateUserProfile(profileRequestDto);
         profileRepository.save(profile);
-        return user.getId();
+        return 1L;
     }
 
     @Transactional // 유저 자신의 정보 조회
