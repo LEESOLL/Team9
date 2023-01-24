@@ -4,11 +4,13 @@ import com.example.market9.dto.InfoRequestDTo;
 import com.example.market9.dto.SellerProfileRequestDto;
 import com.example.market9.dto.SellerProfileResponseDto;
 import com.example.market9.dto.SellerResponseDto;
+import com.example.market9.security.UserDetailsImpl;
 import com.example.market9.service.SellerService;
 import com.example.market9.service.SellerServiceImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 /*import org.springframework.security.core.annotation.AuthenticationPrincipal;*/
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,8 +36,8 @@ public class SellerController {
 
     // 3. 판매자 자신의 프로필 변경
     @PutMapping("/sellers/{id}")
-    public Long changeSellerProfile(@PathVariable Long id, @RequestBody SellerProfileRequestDto sellerProfileRequestDto) {
-        return sellerServiceImpl.changeSellerProfile(id, sellerProfileRequestDto);
+    public Long changeSellerProfile(@PathVariable Long id, @RequestBody SellerProfileRequestDto sellerProfileRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return sellerServiceImpl.changeSellerProfile(sellerProfileRequestDto, userDetails.getUser());
     }
 
 }

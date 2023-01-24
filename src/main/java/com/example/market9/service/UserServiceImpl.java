@@ -8,6 +8,7 @@ import com.example.market9.repository.ProfileRepository;
 import com.example.market9.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 //import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +24,7 @@ public class UserServiceImpl {
 
     private final JwtUtil jwtUtil;
 
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final ProfileRepository profileRepository;
 
     // ADMIN_TOKEN
@@ -32,7 +33,7 @@ public class UserServiceImpl {
     @Transactional // 회원가입
     public void signUp(SignUpRequestDto signUpRequestDto) {
         String username = signUpRequestDto.getUsername();
-        String password = signUpRequestDto.getPassword();
+        String password = passwordEncoder.encode(signUpRequestDto.getPassword());
         String image = signUpRequestDto.getImage();
 
         // 회원 중복 확인
@@ -42,6 +43,7 @@ public class UserServiceImpl {
         }
 
         String nickname = signUpRequestDto.getNickname();
+
         // 사용자 Role 확인
         UserRoleEnum role = UserRoleEnum.USER;//
 
@@ -71,46 +73,35 @@ public class UserServiceImpl {
                 () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
         );
         // 비밀번호 확인
-        if(!user.getPassword().equals(password)){
+        if(!passwordEncoder.matches(password, user.getPassword())){
             throw new IllegalArgumentException("비밀번호 일치하지 않습니다.");
         }
+
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
     }
-//    public SignUpResponseDto login(LoginRequestDto loginRequestDto) {
-//        User user = userRepository.findByUsername(loginRequestDto.getUsername()).orElseThrow(IllegalArgumentException::new);
-//        checkByUserPassword(loginRequestDto, user);
-//        user.updateRefreshToken(jwtTokenProvider.createRefreshToken());
-//        return SignUpResponseDto.of(user, jwtTokenProvider.createToken(user.getUsername()));
-//    }
-
-//    @Override // 비밀번호 체크
-//    public void checkByUserPassword(LoginRequestDto loginRequestDto, User user) {
-//        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword()))
-//            throw new RuntimeException(" 비밀번호가 틀렸습니다 다시한번 확인해주세요.");
-//    }
 
     @Transactional // 유저 자신의 프로필 변경
-    public Long changeUserProfile(Long id, ProfileRequestDto profileRequestDto) {
-        Profile profile = profileRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
+    public Long changeUserProfile(ProfileRequestDto profileRequestDto, Users user) {
+        Profile profile = profileRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
         profile.updateUserProfile(profileRequestDto);
         profileRepository.save(profile);
-        return id;
+        return user.getId();
     }
 
     @Transactional // 유저 자신의 정보 조회
-    public ProfileResponseDto getMyProfile(Long id) {
-        Profile profile = profileRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    public ProfileResponseDto getMyProfile(Users user) {
+        Profile profile = profileRepository.findById(user.getId()).orElseThrow(IllegalArgumentException::new);
         return new ProfileResponseDto(profile);
     }
 
     @Transactional // admin 에게 seller 권한 요청 보내기
-    public String applySeller(SellerProfileRequestDto sellerProfileRequestDto) {
-        String username = sellerProfileRequestDto.getUsername();
+    public String applySeller(SellerProfileRequestDto sellerProfileRequestDto, Users user) {
+        String username = sellerProfileRequestDto.getUsername(); //user.getUsername() 을 할 것인가 sellerProfileRequestDto.getUsername() 을 할것인가..
         String category = sellerProfileRequestDto.getCategory();
         String introduce = sellerProfileRequestDto.getIntroduce();
 
-        Optional<AuthorityDemand> foundAuthorityDemand = authorityDemandRepository.findByUsername(username);
-        Optional<Users> foundUser = userRepository.findByUsername(username);
+        Optional<AuthorityDemand> foundAuthorityDemand = authorityDemandRepository.findByUsername(user.getUsername());
+        Optional<Users> foundUser = userRepository.findByUsername(user.getUsername());
         UserRoleEnum role = foundUser.get().getRole();
         if (role == UserRoleEnum.SELLER) {
             throw new IllegalArgumentException("이미 판매자로 등록된 유저입니다.");

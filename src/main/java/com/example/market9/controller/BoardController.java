@@ -2,12 +2,14 @@ package com.example.market9.controller;
 
 
 import com.example.market9.dto.*;
+import com.example.market9.security.UserDetailsImpl;
 import com.example.market9.service.BoardService;
 import com.example.market9.service.RequestService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,30 +26,28 @@ public class BoardController {
 
     //판매 게시글 등록
      @PostMapping("/")
-     public CreateSalePostResponseDto createSalePost(@RequestBody SalePostRequestDto salePostRequestDto /* @AuthenticationPrincipal UserDetailsImpl userDetails)*/) {
-        return boardService.createSalePost(salePostRequestDto);
+     public CreateSalePostResponseDto createSalePost(@RequestBody SalePostRequestDto salePostRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return boardService.createSalePost(salePostRequestDto, userDetails.getUser());
      }
 
     // 판매상품조회 ( 특정 판매자의 판매 게시물들 가져오기 )
     // 개선점 : Spring Security 활용해서, user 객체 가져와서 query 해와야함.
     @GetMapping("/{sellerId}")
-    public GetSalePostsResponseDto<List<GetSalePostsDto>> getSalePosts(@PathVariable Long sellerId){
-         return boardService.getSalePosts(sellerId);
+    public GetSalePostsResponseDto<List<GetSalePostsDto>> getSalePosts(@PathVariable Long sellerId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+         return boardService.getSalePosts(sellerId, userDetails.getUser());
     }
 
     // 판매상품조회 ( 모든 판매상품 조회 )
     @GetMapping("/")
-    public GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts(){
-         return boardService.getAllSalePosts();
+    public GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts(@AuthenticationPrincipal UserDetailsImpl userDetails){
+         return boardService.getAllSalePosts(userDetails.getUser());
     }
-
-
 
 
     //판매상품수정
     @PutMapping("/{productId}")
-    public CreateSalePostResponseDto editSalePost(@PathVariable Long productId, @RequestBody SalePostRequestDto salePostRequestDto){
-         return boardService.editSalePost(productId, salePostRequestDto);
+    public CreateSalePostResponseDto editSalePost(@PathVariable Long productId, @RequestBody SalePostRequestDto salePostRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+         return boardService.editSalePost(productId, salePostRequestDto, userDetails.getUser());
     }
     // CreateSalePostRequestDto, CreateSalePostResponseDto -> 공동으로 사용하게 Create 빼면 좋을 것 같아요.
 
@@ -60,8 +60,8 @@ public class BoardController {
     }*/
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<String> deleteSalePost(@PathVariable Long productId) {
+    public ResponseEntity<String> deleteSalePost(@PathVariable Long productId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-    return  boardService.deleteSalePost(productId); //인증은 앞단에서..했다고 가정하니까....
+    return  boardService.deleteSalePost(productId, userDetails.getUser()); //인증은 앞단에서..했다고 가정하니까....
     }
 }

@@ -38,11 +38,11 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Transactional // 판매자 자신의 프로필 변경
-    public Long changeSellerProfile(Long id, SellerProfileRequestDto sellerProfileRequestDto) {
-        Profile profile = profileRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
+    public Long changeSellerProfile(SellerProfileRequestDto sellerProfileRequestDto, Users user) {
+        Profile profile = profileRepository.findById(user.getId()).orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
         profile.updateSelleProfile(sellerProfileRequestDto);
         profileRepository.save(profile);
-        return id;
+        return user.getId();
     }
 
 }

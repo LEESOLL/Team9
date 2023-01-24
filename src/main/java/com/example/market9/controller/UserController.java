@@ -3,12 +3,14 @@ package com.example.market9.controller;
 
 import com.example.market9.dto.*;
 import com.example.market9.entity.Users;
+import com.example.market9.security.UserDetailsImpl;
 import com.example.market9.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
 //import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -37,22 +39,22 @@ public class UserController {
     }
 
     // 3. 나의 정보 설정(프로필 변경)
-    @PutMapping("/profile/{id}")
-    public Long changeUserProfile(@PathVariable Long id, @RequestBody ProfileRequestDto profileRequestDto) {
-        return userServiceImpl.changeUserProfile(id, profileRequestDto);
+    @PutMapping("/profile")
+    public Long changeUserProfile(@RequestBody ProfileRequestDto profileRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userServiceImpl.changeUserProfile(profileRequestDto, userDetails.getUser());
     }
 
     // 4. 나의 정보 조회
-    @GetMapping("/profile/{id}")
-    public ProfileResponseDto getMyProfile(@PathVariable Long id) {
-        return userServiceImpl.getMyProfile(id);
+    @GetMapping("/profile")
+    public ProfileResponseDto getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userServiceImpl.getMyProfile(userDetails.getUser());
     }
 
 
     // 5. 판매자 등록 요청 보내기
     @PostMapping("/auth/seller")
-    public String applySeller(@RequestBody SellerProfileRequestDto sellerProfileRequestDto) {
-        userServiceImpl.applySeller(sellerProfileRequestDto);
+    public String applySeller(@RequestBody SellerProfileRequestDto sellerProfileRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userServiceImpl.applySeller(sellerProfileRequestDto, userDetails.getUser());
         return "요청 완료";
     }
 

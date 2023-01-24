@@ -3,12 +3,14 @@ package com.example.market9.controller;
 import com.example.market9.dto.OnlyUserNameDto;
 import com.example.market9.dto.RequestSellerDto;
 import com.example.market9.dto.RequestSellerListResponseDto;
+import com.example.market9.security.UserDetailsImpl;
 import com.example.market9.service.BoardService;
 import com.example.market9.service.RequestService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -33,11 +35,11 @@ public class UserRequestController {
      * @return ResponseEntitiy 활용해서 메세지와 status 상태표시
      */
     @PostMapping("/{productId}/request")
-    public ResponseEntity<String> requestSeller(@PathVariable Long productId, @RequestBody RequestSellerDto requestSellerDto/*String username*/){
+    public ResponseEntity<String> requestSeller(@PathVariable Long productId, @RequestBody RequestSellerDto requestSellerDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
 
 
         /*new ResponseEntity<> ("요청 완료 되었습니다", HttpStatus.OK);*/
-        return requestService.requestSeller(productId,requestSellerDto/*,username*/);
+        return requestService.requestSeller(productId,requestSellerDto, userDetails.getUser());
     }
 
     /**
@@ -46,8 +48,8 @@ public class UserRequestController {
      * @return PurchaseRequestRepository 에서 게시글 id에 대항하는 요청을 반환
      */
     @GetMapping("/{productId}/request") //게시글에 들어온 요청보기
-    public RequestSellerListResponseDto getRequestSellerList(@PathVariable Long productId){
-        return  requestService.getRequestSellerList(productId);
+    public RequestSellerListResponseDto getRequestSellerList(@PathVariable Long productId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return  requestService.getRequestSellerList(productId, userDetails.getUser());
     }
 
     /**
@@ -56,9 +58,9 @@ public class UserRequestController {
      * @return PurchaseRequestRepository 에서  유저네임으로 조회 되는 값을 반환
      */
     @GetMapping("/request")  //전체요청보기 ..,
-    public RequestSellerListResponseDto getRequestAllSellerList(@RequestBody OnlyUserNameDto userName){  //시큐리티 적용시 바뀔사항...유저네임꺼내기 !
+    public RequestSellerListResponseDto getRequestAllSellerList(@RequestBody OnlyUserNameDto userName, @AuthenticationPrincipal UserDetailsImpl userDetails){  //시큐리티 적용시 바뀔사항...유저네임꺼내기 !
 
-        return  requestService.getRequestAllSellerList(userName.getUserName());
+        return  requestService.getRequestAllSellerList(userDetails.getUser());
     }
 
 
@@ -70,9 +72,9 @@ public class UserRequestController {
      * @return 거래가 완료 되었다는 표시와  status OK 표시...
      */
     @PutMapping("/request/{requestId}")
-    public ResponseEntity<String> purchaseConfirmation(@PathVariable Long requestId){
+    public ResponseEntity<String> purchaseConfirmation(@PathVariable Long requestId, @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-      return requestService.purchaseConfirmation(requestId);
+      return requestService.purchaseConfirmation(requestId, userDetails.getUser());
     }
 
 }
