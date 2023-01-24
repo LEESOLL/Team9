@@ -9,6 +9,7 @@ import com.example.market9.exception.ExceptionStatus;
 import com.example.market9.repository.ProfileRepository;
 import com.example.market9.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +27,8 @@ public class SellerServiceImpl implements SellerService {
 
 
     @Transactional // 전체 판매자 목록 조회
-    public List<SellerResponseDto> getSellerList() {
-        List<Users> sellersList = userRepository.findAllByRole(UserRoleEnum.SELLER);
+    public List<SellerResponseDto> getSellerList(Pageable requestPage) {
+        List<Users> sellersList = userRepository.findAllByRole(UserRoleEnum.SELLER,requestPage);
         List<SellerResponseDto> sellerResponseDtoList = sellersList.stream().map(x -> new SellerResponseDto(x)).collect(Collectors.toList());
 
         return sellerResponseDtoList;

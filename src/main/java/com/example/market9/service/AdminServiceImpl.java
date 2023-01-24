@@ -11,6 +11,8 @@ import com.example.market9.exception.ExceptionStatus;
 import com.example.market9.repository.AuthorityDemandRepository;
 import com.example.market9.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +27,8 @@ public class AdminServiceImpl {
     private final AuthorityDemandRepository authorityDemandRepository;
 
     @Transactional // 유저 전체 목록 조회
-    public List<UserListResponseDto> getUserList() {
-        List<Users> users = userRepository.findAll();
+    public List<UserListResponseDto> getUserList(Pageable pageRequest) {
+        Page<Users> users = userRepository.findAll(pageRequest);
         List<UserListResponseDto> userListResponseDtoList = users.stream().map(x -> new UserListResponseDto(x)).collect(Collectors.toList());
         return userListResponseDtoList;
     }

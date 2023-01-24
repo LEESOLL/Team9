@@ -2,6 +2,7 @@ package com.example.market9.dto;
 
 
 import com.example.market9.entity.Board;
+import com.example.market9.entity.SaleStatusEnum;
 import lombok.Getter;
 
 @Getter
@@ -15,7 +16,7 @@ public class GetSalePostsDto {
 
     private Long price;
 
-    private String status;
+    private SaleStatusEnum status;
 
     public GetSalePostsDto(Board board){
         this.title = board.getTitle();

@@ -17,6 +17,8 @@ import com.example.market9.repository.PurchaseRequestRepository;
 import com.example.market9.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,9 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class BoardServiceImpl implements  BoardService {
 
@@ -34,12 +38,22 @@ public class BoardServiceImpl implements  BoardService {
     private final RequestService requestService;
     private final UserRepository userRepository;
 
-    @Transactional
+    private final UserRepository userRepository;
+
+
     @Override
+    @Transactional(readOnly = true)  //업데이트 쿼리 날리는거 아니면 ... 더티채킹.......원... 값이 변경거는 비교 .. ~  //
     public CreateSalePostResponseDto createSalePost(SalePostRequestDto salePostRequestDto) {
 
+
+        ///----------시큐리티 나오면 없어질 내용 ..... 유저 객체를  꺼내오기 위한 과정이다 -----//
+        String userName = salePostRequestDto.getUserName();
+
+        Users sampleUser = userRepository.findByUsername(userName).orElseThrow(()-> new IllegalArgumentException("유저없음"));
+        ///------------------------------------------------------------------------------------------------------------///
+
         SaleStatusEnum status = SaleStatusEnum.SALE;
-        Board board = new Board(salePostRequestDto, status);
+        Board board = new Board(salePostRequestDto, status,sampleUser);
         boardRepository.save(board);
 
         //UserRoleEnum role = UserRoleEnum.USE
@@ -72,13 +86,13 @@ public class BoardServiceImpl implements  BoardService {
 
     // 특정 판매자의 판매 상품 조회
     @Override
-    public GetSalePostsResponseDto<List<GetSalePostsDto>> getSalePosts(Long sellerId) {
+    public GetSalePostsResponseDto<List<GetSalePostsDto>> getSalePosts(Long sellerId , Pageable pageRequest) {
 
         // Spring Security 활용해서, Controller 단에서 User 로 받아와야 함.
         Users user = userRepository.findById(sellerId).orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
 
         // Board 객체 뽑아오기
-        List<Board> boards = boardRepository.findAllByUser(user);
+        List<Board> boards = boardRepository.findAllByUser(user,pageRequest);
 
         // Board 객체 리스트를, DTO 리스트로 변환
         List<GetSalePostsDto> getSalePostsDto = boards.stream()
@@ -92,12 +106,20 @@ public class BoardServiceImpl implements  BoardService {
 
     // 모든 판매 상품 조회
     @Override
-    public GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts(){
+    public GetSalePostsResponseDto<List<GetSalePostsDto>> getAllSalePosts(Pageable pageRequest,String search){
 
-        List<Board> boards = boardRepository.findAll();
+        Page<Board> boards = boardRepository.findAll(pageRequest);
 
-        // Board 객체 리스트를, DTO 리스트로 변환
-        List<GetSalePostsDto> getSalePostsDto = boards.stream()
+        String productName =search;
+        String title =search;
+        String content =search;
+
+        List<Board> searchBoards = boardRepository.findByProductNameContainingIgnoreCaseOrTitleContainingIgnoreCaseOrContentIsContainingIgnoreCase(
+                productName,title,content, pageRequest);
+
+        List<Board> oneSearch = boardRepository.findByProductNameContainingIgnoreCase(search, pageRequest);
+
+        List<GetSalePostsDto> getSalePostsDto = searchBoards.stream()
                 .map(GetSalePostsDto::new)
                 .collect(Collectors.toList());
 
