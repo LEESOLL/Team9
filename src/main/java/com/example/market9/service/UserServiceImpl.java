@@ -68,11 +68,11 @@ public class UserServiceImpl {
     }
 
 
-    public void duplicateCheckByUsername(String username)throws RuntimeException{
+    public void duplicateCheckByUsername(String username) throws RuntimeException{
         if(userRepository.findByUsername(username).isPresent())
             throw new CustomException(ExceptionStatus.DUPLICATED_USERNAME);
     }
-    public void checkByAdminPassword(SignUpRequestDto signUpRequestDto)throws RuntimeException{
+    public void checkByAdminPassword(SignUpRequestDto signUpRequestDto) throws RuntimeException{
         if(!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
             throw new CustomException(ExceptionStatus.WRONGADMINTOKEN);
         }
