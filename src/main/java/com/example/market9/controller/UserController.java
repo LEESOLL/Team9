@@ -12,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -26,8 +28,8 @@ public class UserController {
 
     // 1. 회원가입
     @PostMapping("/auth/signup")
-    public String signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto){
-        userServiceImpl.signUp(signUpRequestDto);
+    public String signUp(@RequestPart("signUpRequestDto") @Valid SignUpRequestDto signUpRequestDto, @RequestPart("file") MultipartFile file) throws IOException {
+        userServiceImpl.signUp(signUpRequestDto, file);
         return "sign up success";
     }
 

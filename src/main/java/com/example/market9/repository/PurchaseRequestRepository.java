@@ -1,7 +1,11 @@
 package com.example.market9.repository;
 
 import com.example.market9.entity.UserRequest;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +17,9 @@ public interface PurchaseRequestRepository extends JpaRepository<UserRequest,Lon
 
    List<UserRequest> findAllByProductId(Long productId);
 
-   List<UserRequest> findAllBySellerName(String sellerName);
+
+
+   List<UserRequest> findAllBySellerName(String sellerName , Pageable pageRequest);
 
    //지금 든 생각 1
     // 1.유저이름으로 보드레포 들려서 해당 유저가쓴 게시글 다 리스트로 가져옴
