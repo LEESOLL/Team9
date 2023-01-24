@@ -2,13 +2,11 @@ package com.example.market9.service;
 
 import com.example.market9.dto.AuthorityDemandDto;
 import com.example.market9.dto.UserListResponseDto;
-import com.example.market9.entity.AuthorityDemand;
-import com.example.market9.entity.PermissionStatusEnum;
-import com.example.market9.entity.UserRoleEnum;
-import com.example.market9.entity.Users;
+import com.example.market9.entity.*;
 import com.example.market9.exception.CustomException;
 import com.example.market9.exception.ExceptionStatus;
 import com.example.market9.repository.AuthorityDemandRepository;
+import com.example.market9.repository.ProfileRepository;
 import com.example.market9.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +23,7 @@ public class AdminServiceImpl {
 
     private final UserRepository userRepository;
     private final AuthorityDemandRepository authorityDemandRepository;
+    private final ProfileRepository profileRepository;
 
     @Transactional // 유저 전체 목록 조회
     public List<UserListResponseDto> getUserList(Pageable pageRequest) {
@@ -46,12 +45,16 @@ public class AdminServiceImpl {
                 .orElseThrow(()-> new CustomException(ExceptionStatus.WRONG_AUTHORITY_DEMAND));
         String username = authorityDemand.getUsername();
         Users users = userRepository.findByUsername(username).get();
-
+        Profile profile = profileRepository.findByUsername(username).get();
         if(authorityDemand.getRole().equals(PermissionStatusEnum.WAITING)) {
             authorityDemand.changePermission(PermissionStatusEnum.ACCEPT);
             authorityDemandRepository.save(authorityDemand);
             users.changeRole(UserRoleEnum.SELLER);
+            users.updateSellerProfile(authorityDemand.getCategory(), authorityDemand.getIntroduce());
+            profile.updateSellerProfile(authorityDemand.getCategory(), authorityDemand.getIntroduce());
             userRepository.save(users);
+            profileRepository.save(profile);
+
         } else if (authorityDemand.getRole().equals(PermissionStatusEnum.ACCEPT)||authorityDemand.getRole().equals(PermissionStatusEnum.REFUSE)) {
             throw new CustomException(ExceptionStatus.ALREADY_PROCESSED_REQUEST);
         }

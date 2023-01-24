@@ -9,7 +9,7 @@ public class SellerProfileResponseDto {
 
     private String username;
     private String nickname;
-    private String image;  // url입니다 !
+    private String filename;  // url입니다 !
     private String introduce;
     private String category;
 
@@ -19,8 +19,7 @@ public class SellerProfileResponseDto {
     public SellerProfileResponseDto(Users user, Profile profile) {  //포스 트 조회 반환 패대글 ...
         this.username = user.getUsername();
         this.nickname = user.getNickname();
-        this.image = user.getImage();
-
+        this.filename = user.getFilename();
         this.introduce = profile.getIntroduce();
         this.category = profile.getCategory();
 
@@ -32,13 +31,6 @@ public class SellerProfileResponseDto {
         this.nickname = profile.getNickname();
         this.introduce = profile.getIntroduce();
         this.category = profile.getCategory();
-        this.image = profile.getImage();
+        this.filename = profile.getFilename();
     }
-
-/*
-
- JSON...
-”username”:
-”nickname;”
-”image”;*/
 }

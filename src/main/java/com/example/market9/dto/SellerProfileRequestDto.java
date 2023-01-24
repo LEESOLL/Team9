@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class SellerProfileRequestDto {
-    private String username;
-    private String nickname;
-    private String image;
     private String category;
     private String introduce;
+    private String nickname;
 }

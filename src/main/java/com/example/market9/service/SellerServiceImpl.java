@@ -26,11 +26,10 @@ public class SellerServiceImpl implements SellerService {
     private final ProfileRepository profileRepository;
 
 
-    @Transactional // 전체 판매자 목록 조회
+    @Transactional
     public List<SellerResponseDto> getSellerList(Pageable requestPage) {
         List<Users> sellersList = userRepository.findAllByRole(UserRoleEnum.SELLER,requestPage);
         List<SellerResponseDto> sellerResponseDtoList = sellersList.stream().map(x -> new SellerResponseDto(x)).collect(Collectors.toList());
-
         return sellerResponseDtoList;
     }
 
@@ -46,7 +45,7 @@ public class SellerServiceImpl implements SellerService {
         if(user.getRole().equals(UserRoleEnum.USER)) {
             throw new CustomException(ExceptionStatus.ACCESS_DENINED);
         }
-        user.updateSeller(sellerProfileRequestDto);
+        user.updateSellerProfile(sellerProfileRequestDto);
         userRepository.save(user);
         Profile profile = profileRepository.findById(user.getId()).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
         profile.updateSelleProfile(sellerProfileRequestDto);
