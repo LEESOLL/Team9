@@ -19,7 +19,7 @@ public class SellerProfileResponseDto {
     public SellerProfileResponseDto(Users user, Profile profile) {  //포스 트 조회 반환 패대글 ...
         this.username = user.getUsername();
         this.nickname = user.getNickname();
-        this.image = user.getImages();
+        this.image = user.getImage();
 
         this.introduce = profile.getIntroduce();
         this.category = profile.getCategory();

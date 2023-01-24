@@ -2,6 +2,7 @@ package com.example.market9.entity;
 
 import com.example.market9.dto.ProfileRequestDto;
 import com.example.market9.dto.SellerProfileRequestDto;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor
+@Data
 public class Profile {
     // 모든 사용자(유저 + 판매자)의 프로필을 의미하는 엔티티
     @Id
@@ -24,6 +26,9 @@ public class Profile {
     private String category;
 
     private String image;
+    //
+    private  String filename;
+    private String filepath;
 
 
 
@@ -39,6 +44,7 @@ public class Profile {
         this.nickname = nickname;
         this.image = image;
     }
+
 
     //seller 요청시 작성할 프로필
     public Profile(String username, String nickname, String introduce, String category, String image) {
