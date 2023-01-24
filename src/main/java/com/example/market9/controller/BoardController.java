@@ -96,7 +96,6 @@ public class BoardController {
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<String> deleteSalePost(@PathVariable Long productId) {
-
-    return  boardService.deleteSalePost(productId); //인증은 앞단에서..했다고 가정하니까....
+        return  boardService.deleteSalePost(productId); //인증은 앞단에서..했다고 가정하니까....
     }
 }

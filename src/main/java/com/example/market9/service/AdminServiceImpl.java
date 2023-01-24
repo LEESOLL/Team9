@@ -6,6 +6,8 @@ import com.example.market9.entity.AuthorityDemand;
 import com.example.market9.entity.PermissionStatusEnum;
 import com.example.market9.entity.UserRoleEnum;
 import com.example.market9.entity.Users;
+import com.example.market9.exception.CustomException;
+import com.example.market9.exception.ExceptionStatus;
 import com.example.market9.repository.AuthorityDemandRepository;
 import com.example.market9.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +43,7 @@ public class AdminServiceImpl {
     @Transactional // 판매 권한 요청 수락
     public Long acceptAuthorityDemand(Long id) {
         AuthorityDemand authorityDemand = authorityDemandRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 판매자 변경 신청서입니다."));
+                .orElseThrow(()-> new CustomException(ExceptionStatus.WRONG_AUTHORITY_DEMAND));
         String username = authorityDemand.getUsername();
         Users users = userRepository.findByUsername(username).get();
 
@@ -50,6 +52,8 @@ public class AdminServiceImpl {
             authorityDemandRepository.save(authorityDemand);
             users.changeRole(UserRoleEnum.SELLER);
             userRepository.save(users);
+        } else if (authorityDemand.getRole().equals(PermissionStatusEnum.ACCEPT)||authorityDemand.getRole().equals(PermissionStatusEnum.REFUSE)) {
+            throw new CustomException(ExceptionStatus.ALREADY_PROCESSED_REQUEST);
         }
         return id;
     }
@@ -57,10 +61,12 @@ public class AdminServiceImpl {
     @Transactional // 판매 권한 요청 거절
     public Long refuseAuthorityDemand(Long id) {
         AuthorityDemand authorityDemand = authorityDemandRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 판매자 변경 신청서입니다."));
+                .orElseThrow(()-> new CustomException(ExceptionStatus.WRONG_AUTHORITY_DEMAND));
         if(authorityDemand.getRole().equals(PermissionStatusEnum.WAITING)) {
             authorityDemand.changePermission(PermissionStatusEnum.REFUSE);
             authorityDemandRepository.save(authorityDemand);
+        } else if (authorityDemand.getRole().equals(PermissionStatusEnum.REFUSE)||authorityDemand.getRole().equals(PermissionStatusEnum.ACCEPT)) {
+            throw new CustomException(ExceptionStatus.ALREADY_PROCESSED_REQUEST);
         }
         return id;
     }

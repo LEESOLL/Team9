@@ -5,6 +5,8 @@ import com.example.market9.dto.RequestSellerListResponseDto;
 import com.example.market9.entity.Board;
 import com.example.market9.entity.SaleStatusEnum;
 import com.example.market9.entity.UserRequest;
+import com.example.market9.exception.CustomException;
+import com.example.market9.exception.ExceptionStatus;
 import com.example.market9.repository.BoardRepository;
 import com.example.market9.repository.PurchaseRequestRepository;
 import lombok.RequiredArgsConstructor;
@@ -117,7 +119,7 @@ public class RequestServiceImpl implements RequestService {
     //------------------메소드 추출--------------------------------------------//
 
     private Board getBoard(Long boardId) {
-        return boardRepository.findById(boardId).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다"));
+        return boardRepository.findById(boardId).orElseThrow(() -> new CustomException(ExceptionStatus.BOARD_NOT_EXIST));
     }
 
     private static Long getBoardId(UserRequest userRequest) {
@@ -125,7 +127,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     private UserRequest getUserRequest(Long requestId) {
-        return purchaseRequestRepository.findById(requestId).orElseThrow(() -> new IllegalArgumentException("해당요청이 업습니다"));
+        return purchaseRequestRepository.findById(requestId).orElseThrow(() -> new CustomException(ExceptionStatus.REQUEST_NOT_EXIST));
     }
 
 

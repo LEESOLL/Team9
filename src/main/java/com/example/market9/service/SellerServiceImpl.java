@@ -4,6 +4,8 @@ import com.example.market9.dto.*;
 import com.example.market9.entity.Profile;
 import com.example.market9.entity.UserRoleEnum;
 import com.example.market9.entity.Users;
+import com.example.market9.exception.CustomException;
+import com.example.market9.exception.ExceptionStatus;
 import com.example.market9.repository.ProfileRepository;
 import com.example.market9.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,14 +36,20 @@ public class SellerServiceImpl implements SellerService {
 
     @Transactional // 판매자 정보 조회
     public SellerProfileResponseDto getSellerProfile(Long id) {
-        Profile profile = profileRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Profile profile = profileRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
         return new SellerProfileResponseDto(profile);
 
     }
 
     @Transactional // 판매자 자신의 프로필 변경
     public Long changeSellerProfile(Long id, SellerProfileRequestDto sellerProfileRequestDto) {
-        Profile profile = profileRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
+        Users users = userRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_USERNAME));
+        if(users.getRole().equals(UserRoleEnum.USER)) {
+            throw new CustomException(ExceptionStatus.ACCESS_DENINED);
+        }
+        users.updateSeller(sellerProfileRequestDto);
+        userRepository.save(users);
+        Profile profile = profileRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
         profile.updateSelleProfile(sellerProfileRequestDto);
         profileRepository.save(profile);
         return id;

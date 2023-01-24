@@ -39,8 +39,8 @@ public class Board extends TimeStamp {
 
 
 
+
     public Board(SalePostRequestDto salePostRequestDto, SaleStatusEnum status ,Users users) {
-        this.id = salePostRequestDto.getId();
         this.productName = salePostRequestDto.getProductName();
         this.title = salePostRequestDto.getTitle();
         this.content = salePostRequestDto.getContent();
