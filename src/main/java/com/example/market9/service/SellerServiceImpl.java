@@ -36,8 +36,14 @@ public class SellerServiceImpl implements SellerService {
     @Transactional // 판매자 정보 조회
     public SellerProfileResponseDto getSellerProfile(Long id) {
         Profile profile = profileRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
-        return new SellerProfileResponseDto(profile);
+        Users user = userRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.REQUEST_NOT_EXIST));
 
+        if(!user.getRole().equals(UserRoleEnum.SELLER)) {
+            throw new CustomException(ExceptionStatus.REQUEST_NOT_EXIST);
+        }
+
+        return new SellerProfileResponseDto(profile);
+        
     }
 
     @Transactional // 판매자 자신의 프로필 변경
