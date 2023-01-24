@@ -7,8 +7,11 @@ import com.example.market9.entity.SaleStatusEnum;
 
 import com.example.market9.entity.UserRequest;
 import com.example.market9.entity.Users;
+
 import com.example.market9.exception.CustomException;
 import com.example.market9.exception.ExceptionStatus;
+
+
 import com.example.market9.repository.BoardRepository;
 import com.example.market9.repository.PurchaseRequestRepository;
 import com.example.market9.repository.UserRepository;
@@ -49,18 +52,18 @@ public class BoardServiceImpl implements  BoardService {
     @Transactional
     public ResponseEntity<String> deleteSalePost(Long productId) {
 
+
         // 존재하면 -> 게시글 삭제 완료.
         // 존재하지 않는 아이디에 대한 삭제 요청? => Client 쪽 문제.
-
         if (existsById(productId)) {
             boardRepository.deleteById(productId);
             requestService.deleteUserRequest(productId);
             return new ResponseEntity<>("게시글 삭제 완료했습니다", HttpStatus.OK);
         } else {
             throw new CustomException(ExceptionStatus.BOARD_NOT_EXIST);
+
         }
     }
-
 
     public boolean existsById(Long productId) {
         return boardRepository.existsById(productId);
@@ -112,6 +115,7 @@ public Result memberV2(){
 
     return new Result(collect.size(), collect);
 }
+<<<<<<< HEAD
     */
 
     //판매상품수정

@@ -1,16 +1,15 @@
 package com.example.market9.dto;
 
 import com.example.market9.entity.UserRoleEnum;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.apache.catalina.User;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Getter
+@Setter
+
 @NoArgsConstructor
 public class SignUpRequestDto {
 
@@ -27,6 +26,8 @@ public class SignUpRequestDto {
 
     private boolean admin = false;
     private String adminToken = "";
+    private  String filename;
+    private String filepath;
 
 
 //    private String image;

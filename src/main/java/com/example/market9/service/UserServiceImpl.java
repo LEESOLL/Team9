@@ -12,9 +12,13 @@ import lombok.RequiredArgsConstructor;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +36,14 @@ public class UserServiceImpl {
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     @Transactional // 회원가입
-    public void signUp(SignUpRequestDto signUpRequestDto) throws NullPointerException {
+    public void signUp(SignUpRequestDto signUpRequestDto, MultipartFile file) throws NullPointerException, IOException {
+        String filepath = System.getProperty("user.dir")+"/src/main/resources/static/files";
+        UUID uuid = UUID.randomUUID();
+        String filename = uuid+"_"+file.getOriginalFilename();
+        File savefile = new File(filepath, filename);
+        file.transferTo(savefile);
+        signUpRequestDto.setFilename(filename);
+        signUpRequestDto.setFilepath("/files"+filename);
         String username = signUpRequestDto.getUsername();
         String password = signUpRequestDto.getPassword();
         String image = signUpRequestDto.getImage();
@@ -59,9 +70,9 @@ public class UserServiceImpl {
         }*/
 
 
-        Users user = new Users(username, password, nickname, role);
+        Users user = new Users(username, password, image, nickname, filepath, filename, role);
 //        Users seller = new Users(username, password, nickname, UserRoleEnum.SELLER);
-        Profile profile = new Profile(username, nickname, image);
+        Profile profile = new Profile(username, nickname, image, filepath, filename);  //생성자 이미있다고? 어디..?
         userRepository.save(user);
 //        userRepository.save(seller);
         profileRepository.save(profile);
@@ -74,7 +85,7 @@ public class UserServiceImpl {
     }
     public void checkByAdminPassword(SignUpRequestDto signUpRequestDto) throws RuntimeException{
         if(!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-            throw new CustomException(ExceptionStatus.WRONGADMINTOKEN);
+            throw new CustomException(ExceptionStatus.WRONG_ADMINTOKEN);
         }
     }
 
@@ -85,11 +96,11 @@ public class UserServiceImpl {
 
         // 사용자 확인
         Users user = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
+                () -> new CustomException(ExceptionStatus.WRONG_USERNAME)
         );
         // 비밀번호 확인
         if(!user.getPassword().equals(password)){
-            throw new IllegalArgumentException("비밀번호 일치하지 않습니다.");
+            throw new CustomException(ExceptionStatus.WRONG_PASSWORD);
         }
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
     }
@@ -108,7 +119,10 @@ public class UserServiceImpl {
 
     @Transactional // 유저 자신의 프로필 변경
     public Long changeUserProfile(Long id, ProfileRequestDto profileRequestDto) {
-        Profile profile = profileRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("프로필이 존재하지 않습니다."));
+        Users users = userRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_USERNAME));
+        users.updateUser(profileRequestDto);
+        userRepository.save(users);
+        Profile profile = profileRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
         profile.updateUserProfile(profileRequestDto);
         profileRepository.save(profile);
         return id;
@@ -116,7 +130,7 @@ public class UserServiceImpl {
 
     @Transactional // 유저 자신의 정보 조회
     public ProfileResponseDto getMyProfile(Long id) {
-        Profile profile = profileRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Profile profile = profileRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
         return new ProfileResponseDto(profile);
     }
 
@@ -161,6 +175,8 @@ public class UserServiceImpl {
     }
     public void checkAuthority(SellerProfileRequestDto sellerProfileRequestDto)throws RuntimeException{
         String username = sellerProfileRequestDto.getUsername();
+        Users user = userRepository.findByUsername(username).orElseThrow(
+                () -> new CustomException(ExceptionStatus.WRONG_USERNAME));
         Optional<Users> foundUser = userRepository.findByUsername(username);
         UserRoleEnum role = foundUser.get().getRole();
         if (role == UserRoleEnum.SELLER) {

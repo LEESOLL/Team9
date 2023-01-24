@@ -24,12 +24,25 @@ public class ExceptionAdviceHandler {
 //    @ExceptionHandler({IllegalArgumentException.class})
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)
 //    protected ResponseEntity handleIllegalArgumentException(IllegalArgumentException e) {
-//        return new ResponseEntity(new ErrorDto(e.getMessage(), HttpStatus.BAD_REQUEST))
+//        ApiExceptionDto apiExceptionDto = new ApiExceptionDto();
+//        apiExceptionDto.setErrorMessage(e.getMessage());
+//        apiExceptionDto.setHttpStatus(HttpStatus.BAD_REQUEST);
+//        log.warn(e.getMessage());
+//        return new ResponseEntity(apiExceptionDto, HttpStatus.BAD_REQUEST);
 //    }
     @ExceptionHandler({NullPointerException.class})
     protected ResponseEntity handleNullPointerException(Exception e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+//    @ExceptionHandler({NullPointerException.class})
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    protected ResponseEntity handleNullPointerException(Exception e) {
+//        ApiExceptionDto apiExceptionDto = new ApiExceptionDto();
+//        apiExceptionDto.setErrorMessage(e.getMessage());
+//        apiExceptionDto.setHttpStatus(HttpStatus.BAD_REQUEST);
+//        return new ResponseEntity(apiExceptionDto, HttpStatus.BAD_REQUEST);
+//    }
+
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     protected ResponseEntity handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
