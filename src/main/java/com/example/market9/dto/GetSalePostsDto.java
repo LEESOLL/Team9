@@ -22,7 +22,7 @@ public class GetSalePostsDto {
         this.title = board.getTitle();
         this.productName = board.getProductName();
         this.price = board.getPrice();
-//        this.status = board.getStatus();
+        this.status = board.getStatus();
     }
 
 }

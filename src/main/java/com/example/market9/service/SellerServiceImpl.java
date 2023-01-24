@@ -50,7 +50,7 @@ public class SellerServiceImpl implements SellerService {
         Profile profile = profileRepository.findById(user.getId()).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
         profile.updateSelleProfile(sellerProfileRequestDto);
         profileRepository.save(profile);
-        return user.getId();
+        return 1L;
     }
 
 }
