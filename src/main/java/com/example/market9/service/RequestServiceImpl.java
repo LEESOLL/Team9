@@ -104,11 +104,24 @@ public class RequestServiceImpl implements RequestService {
      */
     @Override
     @Transactional
-    public List<UserRequest> getRequestAllSellerList(Users seller , Pageable pageable) {
+    public List<Response> getRequestAllSellerList(Users seller , Pageable pageable) {
 
         List<UserRequest> allBySellerName = purchaseRequestRepository.findBySeller(seller,pageable);
-        /*return new RequestSellerListResponseDto(allBySellerName);*/
-        return allBySellerName;
+        /*return new RequestSellerListResponseDto(
+        allBySellerName);*/
+        List<Response> responses = new ArrayList<>();
+        for (UserRequest respons : allBySellerName) {
+            String requestContent = respons.getRequestContent();
+            String userName = respons.getUserName();
+            Long postId = respons.getProductId();
+
+            Response response = new Response(requestContent,userName,postId);
+
+            responses.add(response);
+        }
+
+
+        return responses;
     }
 ///!
     /**

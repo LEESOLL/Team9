@@ -25,7 +25,7 @@ public interface RequestService {
     List<Response> getRequestSellerList(Long productId, Users users);
 
 
-    List<UserRequest> getRequestAllSellerList(Users seller, Pageable pageable);
+    List<Response> getRequestAllSellerList(Users seller, Pageable pageable);
 
 
 

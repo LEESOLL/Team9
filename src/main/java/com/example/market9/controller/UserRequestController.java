@@ -63,7 +63,7 @@ public class UserRequestController {
      * @return PurchaseRequestRepository 에서  유저네임으로 조회 되는 값을 반환
      */
     @GetMapping("/seller/request")  //전체요청보기 ..,
-    public List<UserRequest> getRequestAllSellerList(
+    public List<Response> getRequestAllSellerList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(value = "page",required = false,defaultValue ="1") Integer page,
             @RequestParam(value = "size",required = false,defaultValue = "2") Integer size,
