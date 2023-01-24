@@ -62,7 +62,10 @@ public class WebSecurityConfig {
                 .antMatchers("/api/auth/signup").permitAll()
                 .antMatchers("/api/auth/login").permitAll()
                 .antMatchers("/api/auth/products/").permitAll()
-                .antMatchers("/api/auth/products/post").hasAnyRole(UserRoleEnum.Authority.SELLER)
+                .antMatchers("/api/auth/products/post").hasAnyRole("SELLER")
+                .antMatchers("/api/products/seller/**").hasAnyRole("SELLER")
+                .antMatchers("/api/products/user/**").hasAnyRole("USER")
+
                 .anyRequest().authenticated()
                 .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); //JWT 인증/인가를 사용하기 위한 설정
 

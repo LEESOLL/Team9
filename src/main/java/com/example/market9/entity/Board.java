@@ -16,7 +16,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Board extends TimeStamp {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Board_Id")
     private Long id;
     private String productName; //상품명

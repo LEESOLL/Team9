@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class AuthorityDemand {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //뭔차이가 있다고 들었는데 ..기억이 ..
     private Long id;
 
 //    private Profile profile;

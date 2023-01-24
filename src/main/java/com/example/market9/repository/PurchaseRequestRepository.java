@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface PurchaseRequestRepository extends JpaRepository<UserRequest,Long> {
+public interface PurchaseRequestRepository extends JpaRepository<UserRequest,Long> {//죄송합니다...  ㅠㅠㅠ......
 
 
     Optional<UserRequest> deleteByProductId (Long productId);  //게시글삭제되면 한 요청도 삭제...
@@ -20,7 +20,9 @@ public interface PurchaseRequestRepository extends JpaRepository<UserRequest,Lon
 
 
   /* List<UserRequest> findAllBySellerName(String sellerName , Pageable pageRequest);*/
-   List<UserRequest> findAllBySeller(Users seller , Pageable pageRequest);
+   List<UserRequest> findBySeller(Users seller, Pageable pageable);
+
+
 
    //지금 든 생각 1
     // 1.유저이름으로 보드레포 들려서 해당 유저가쓴 게시글 다 리스트로 가져옴

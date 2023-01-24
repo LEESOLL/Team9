@@ -61,7 +61,7 @@ public class BoardServiceImpl implements  BoardService {
         Board board = boardRepository.findById(productId).orElseThrow(()-> new CustomException(ExceptionStatus.BOARD_NOT_EXIST));
         // 존재하면 -> 게시글 삭제 완료.
         // 존재하지 않는 아이디에 대한 삭제 요청? => Client 쪽 문제.
-        if (board.getUser().equals(users)) {
+        if (board.getUser().getId().equals(users.getId())) {
             boardRepository.deleteById(productId);
             requestService.deleteUserRequest(productId);
             return new ResponseEntity<>("게시글 삭제 완료했습니다", HttpStatus.OK);
@@ -139,7 +139,7 @@ public Result memberV2(){
 
         Board board = boardRepository.findById(productId).orElseThrow
                 (() -> new CustomException(ExceptionStatus.BOARD_NOT_EXIST));
-        if(board.getUser().equals(users)){
+        if(board.getUser().getId().equals(users.getId())){
             board.editSalePost(productId,salePostRequestDto);
             return new CreateSalePostResponseDto(board);
 

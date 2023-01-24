@@ -2,6 +2,7 @@ package com.example.market9.service;
 
 import com.example.market9.dto.RequestSellerDto;
 import com.example.market9.dto.RequestSellerListResponseDto;
+import com.example.market9.dto.Response;
 import com.example.market9.entity.UserRequest;
 import com.example.market9.entity.Users;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
@@ -21,10 +22,10 @@ public interface RequestService {
     ResponseEntity<String> requestSeller(Long productId, RequestSellerDto requestSellerDto, Users users) ;
 
 
-    RequestSellerListResponseDto getRequestSellerList(Long productId,Users users);
+    List<Response> getRequestSellerList(Long productId, Users users);
 
 
-    RequestSellerListResponseDto getRequestAllSellerList(Users seller, Pageable pageRequest);
+    List<UserRequest> getRequestAllSellerList(Users seller, Pageable pageable);
 
 
 

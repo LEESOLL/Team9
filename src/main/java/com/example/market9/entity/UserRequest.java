@@ -20,13 +20,12 @@ public class UserRequest extends TimeStamp {
     private String userName; /// path 유저id만 가지고오면 .>장점 @OneToMany피할 수 있습니다.... //유저 id 유저 객체 어떤게 좋을까요.....?!
 
     private boolean status;
-
 //  private String sellerName; //회원 가입시 적는 아이디  중복 X ...*/
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID")
+    private Users seller;//seller < 받을수 있다 여러개의 요청을 ... 요청 기준으로 매티 투 원 ..
 
-
-    @ManyToOne
-    private Users seller;
 
     public UserRequest(RequestSellerDto requestSellerDto, Long productId, String userName, Boolean status ,Users seller) {
         this.requestContent = requestSellerDto.getRequestContent();

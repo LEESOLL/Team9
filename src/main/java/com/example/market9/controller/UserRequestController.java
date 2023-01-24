@@ -2,6 +2,8 @@ package com.example.market9.controller;
 
 import com.example.market9.dto.RequestSellerDto;
 import com.example.market9.dto.RequestSellerListResponseDto;
+import com.example.market9.dto.Response;
+import com.example.market9.entity.UserRequest;
 import com.example.market9.entity.Users;
 import com.example.market9.security.UserDetailsImpl;
 import com.example.market9.service.BoardService;
@@ -14,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 유저가 셀러에게 요청을 보내는걸 처리하는 컨트롤러입니다..!
@@ -34,7 +38,7 @@ public class UserRequestController {
      * @param requestSellerDto  요청메세지가 담겨있다 이때 요청하는 유저의 이름도 담겨잇는데 이건 추후 시큐리티에서 해결
      * @return ResponseEntitiy 활용해서 메세지와 status 상태표시
      */
-    @PostMapping("/{productId}/request")
+    @PostMapping("/user/{productId}/request")//고객
     public ResponseEntity<String> requestSeller(@PathVariable Long productId, @RequestBody RequestSellerDto requestSellerDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
 
 
@@ -49,8 +53,8 @@ public class UserRequestController {
      * @param productId  해당 게시글의 id값
      * @return PurchaseRequestRepository 에서 게시글 id에 대항하는 요청을 반환
      */
-    @GetMapping("/{productId}/request") //게시글에 들어온 요청보기
-    public RequestSellerListResponseDto getRequestSellerList(@PathVariable Long productId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+    @GetMapping("/seller/{productId}/request") //게시글에 들어온 요청보기//셀러
+    public List<Response> getRequestSellerList(@PathVariable Long productId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return  requestService.getRequestSellerList(productId,userDetails.getUser());
     }
 
@@ -58,8 +62,8 @@ public class UserRequestController {
      * 셀러가 쓴 게시글에 대한 모든 요청을 보는것..
      * @return PurchaseRequestRepository 에서  유저네임으로 조회 되는 값을 반환
      */
-    @GetMapping("/request")  //전체요청보기 ..,
-    public RequestSellerListResponseDto getRequestAllSellerList(
+    @GetMapping("/seller/request")  //전체요청보기 ..,
+    public List<UserRequest> getRequestAllSellerList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(value = "page",required = false,defaultValue ="1") Integer page,
             @RequestParam(value = "size",required = false,defaultValue = "2") Integer size,
@@ -74,7 +78,8 @@ public class UserRequestController {
 
         Users seller = userDetails.getUser();
 
-        return  requestService.getRequestAllSellerList(seller, pageRequest);
+       /* return  requestService.getRequestAllSellerList(seller, pageRequest);*/
+        return  requestService.getRequestAllSellerList(seller,pageRequest);
     }
 
 
@@ -86,7 +91,7 @@ public class UserRequestController {
      * @param requestId  이건 구매요청폼의 아이디이다..
      * @return 거래가 완료 되었다는 표시와  status OK 표시...
      */
-    @PutMapping("/request/{requestId}") // 이상황은 .. 이미 셀러마다 들어온 요청 검증이 끝난 상황..? 셀러가 가입한 아이디 !
+    @PutMapping("/seller/request/{requestId}") //셀러만// 이상황은 .. 이미 셀러마다 들어온 요청 검증이 끝난 상황..? 셀러가 가입한 아이디 !
     public ResponseEntity<String> purchaseConfirmation(@PathVariable Long requestId ,@AuthenticationPrincipal UserDetailsImpl userDetails){
 
       return requestService.purchaseConfirmation(requestId,userDetails.getUser());

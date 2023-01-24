@@ -13,6 +13,7 @@ public class RequestSellerListResponseDto {
     //----버전 1. 셀러가 자기가쓴 1번 게시글 을 들어가서 해당 게시글의 요청만 조회--------//
 
     List<UserRequest> sellerRequestList;
+    ///객체 json... 컬럼을...
 
     public RequestSellerListResponseDto(List<UserRequest> sellerRequestList) {
         this.sellerRequestList = sellerRequestList;

@@ -2,6 +2,7 @@ package com.example.market9.service;
 
 import com.example.market9.dto.RequestSellerDto;
 import com.example.market9.dto.RequestSellerListResponseDto;
+import com.example.market9.dto.Response;
 import com.example.market9.entity.Board;
 import com.example.market9.entity.SaleStatusEnum;
 import com.example.market9.entity.UserRequest;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +39,13 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public ResponseEntity<String> requestSeller(Long productId, RequestSellerDto requestSellerDto, Users users) {
 
+
+        boolean present = boardRepository.findById(productId).isPresent();
+
+        if (!present){
+           throw new CustomException(ExceptionStatus.BOARD_NOT_EXIST);
+        }
+
         List<UserRequest> userAllRequests = getUserRequestList(productId);
 
         ResponseEntity<String> BAD_REQUEST = getResponse(userAllRequests);
@@ -44,13 +53,11 @@ public class RequestServiceImpl implements RequestService {
         if (BAD_REQUEST != null){
             return BAD_REQUEST;
         }
+        Board board = boardRepository.findById(productId).orElseThrow(() -> new CustomException(ExceptionStatus.BOARD_NOT_EXIST));
 
         Boolean status = false;
-        Board board = getBoard(productId);
        /* String sellerName = board.getUserName();*/
-        Users seller = board.getUser();
-
-        UserRequest userRequests = new UserRequest(requestSellerDto, productId,users.getUsername(), status,users);
+        UserRequest userRequests = new UserRequest(requestSellerDto, productId,users.getUsername(), status,board.getUser());
         purchaseRequestRepository.save(userRequests);
 
         return new ResponseEntity<>("요청 완료 되었습니다", HttpStatus.OK);
@@ -65,32 +72,48 @@ public class RequestServiceImpl implements RequestService {
      */
     @Override
     @Transactional
-    public RequestSellerListResponseDto getRequestSellerList(Long productId, Users user) {
+    public List<Response> getRequestSellerList(Long productId, Users user) {
         Board board = boardRepository.findById(productId).orElseThrow(()-> new CustomException(ExceptionStatus.BOARD_NOT_EXIST));
 
-        if(board.getUser().equals(user)) {
+        if(board.getUser().getId().equals(user.getId())) {
             List<UserRequest> userRequests = getUserRequestList(productId);
-            return new RequestSellerListResponseDto(userRequests);
+            List<Response> response = new ArrayList<>();
+
+            for (UserRequest request : userRequests) {
+                String requestContent = request.getRequestContent();
+                String userName = request.getUserName();
+                Long postId = request.getProductId();
+
+                Response response1 = new Response(requestContent,userName,postId);
+
+                response.add(response1);
+
+            }
+            // 요청내용/요청한사람아이디=이름/무슨게시물에 요청왔나///
+
+
+            return  response;
         }throw new CustomException(ExceptionStatus.WRONG_SELLER_ID_T0_BOARD);
     }
 
     /**
      * 판매자에게 온 모든 요청을 보여주는 메소드
      *
-     * @param sellerName   판매자 이름이 들어간다 이건  믿는다..시큐리티...!!
      * @param pageRequest  페이관리 객체
      * @return 리스트를 담아서 반환
      */
     @Override
     @Transactional
-    public RequestSellerListResponseDto getRequestAllSellerList(Users seller, Pageable pageRequest) {
-        List<UserRequest> allBySellerName = purchaseRequestRepository.findAllBySeller(seller, pageRequest);
-        return new RequestSellerListResponseDto(allBySellerName);
-    }
+    public List<UserRequest> getRequestAllSellerList(Users seller , Pageable pageable) {
 
+        List<UserRequest> allBySellerName = purchaseRequestRepository.findBySeller(seller,pageable);
+        /*return new RequestSellerListResponseDto(allBySellerName);*/
+        return allBySellerName;
+    }
+///!
     /**
      * 요청이 들어온것 중 .. 맘에드는 요청을 수락하는 메소드 거래완료다
-     * @param requestId 요청의 id값이다
+     * @param requestId 요청의 id값이
      */
     @Override
     @Transactional
@@ -98,7 +121,7 @@ public class RequestServiceImpl implements RequestService {
 
         UserRequest userRequest = getUserRequest(requestId);
 
-        if(!userRequest.getSeller().equals(seller)){
+        if(!userRequest.getSeller().getId().equals(seller.getId())){
             throw new CustomException(ExceptionStatus.WRONG_SELLER_ID_TO_USER_REQUEST);
         }
 

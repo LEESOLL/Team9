@@ -16,6 +16,9 @@ public interface BoardRepository extends JpaRepository<Board,Long> {
 
     List<Board> findAllByUser(Users user,Pageable pageable);
 
+
+
+
     List<Board> findByProductNameContainingIgnoreCase(String productName,Pageable pageable);
     List<Board> findByProductNameContainingIgnoreCaseOrTitleContainingIgnoreCaseOrContentIsContainingIgnoreCase(
             String productName,
