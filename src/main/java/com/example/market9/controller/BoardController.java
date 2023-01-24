@@ -98,3 +98,4 @@ public class BoardController {
         return  boardService.deleteSalePost(productId,userDetails.getUser()); //인증은 앞단에서..했다고 가정하니까....
     }
 }
+>>>>>>> b69a0b1931655bdbe0a0b442a167a96abe16402b

@@ -32,3 +32,4 @@ public interface RequestService {
     /* RequestSellerListResponseDto getRequestSellerList(Long productId);*/
     ResponseEntity<String> purchaseConfirmation(Long requestId , Users seller);
 }
+

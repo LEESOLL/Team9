@@ -33,3 +33,4 @@ public interface BoardService {
     RequestSellerListResponseDto getRequestAllSellerList(String userName);*/
 
 }
+

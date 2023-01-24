@@ -41,7 +41,7 @@ public class UserController {
     }
 /*
 
-    // 3. 나의 정보 설정(프로필 변경)
+    //3. 나의 정보 설정(프로필 변경)
     @PutMapping("/profile")
     public Long changeUserProfile(@RequestBody ProfileRequestDto profileRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userServiceImpl.changeUserProfile(profileRequestDto, userDetails.getUser());

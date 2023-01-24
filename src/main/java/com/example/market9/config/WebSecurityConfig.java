@@ -61,6 +61,7 @@ public class WebSecurityConfig {
                 .antMatchers("/api/auth/seller").permitAll()
                 .antMatchers("/api/auth/signup").permitAll()
                 .antMatchers("/api/auth/login").permitAll()
+                .antMatchers("/api/profile/**").permitAll()
                 .antMatchers("/api/auth/products/").permitAll()
                 .antMatchers("/api/auth/products/post").hasAnyRole("SELLER")
                 .antMatchers("/api/products/seller/**").hasAnyRole("SELLER")

@@ -8,7 +8,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Getter
-@Setter
 
 @NoArgsConstructor
 public class SignUpRequestDto {
@@ -22,15 +21,9 @@ public class SignUpRequestDto {
     private String password;
 
     private String nickname;
-    private String image = "기본이미지";
 
     private boolean admin = false;
     private String adminToken = "";
     private  String filename;
     private String filepath;
-
-
-//    private String image;
-    // 기본이미지 ? 를 설정해놔야?
-
 }

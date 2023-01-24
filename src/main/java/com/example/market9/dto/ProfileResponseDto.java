@@ -13,12 +13,12 @@ public class ProfileResponseDto {
 
     private String username;
     private String nickname;
-    private String image;
+    private String filename;
 
     public ProfileResponseDto(Profile profile) {
         this.username = profile.getUsername();
         this.nickname = profile.getNickname();
-        this.image = profile.getImage();
+        this.filename = profile.getFilename();
     }
 
 }

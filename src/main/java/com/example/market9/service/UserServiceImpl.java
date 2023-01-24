@@ -38,16 +38,13 @@ public class UserServiceImpl {
 
     @Transactional // 회원가입
     public void signUp(SignUpRequestDto signUpRequestDto, MultipartFile file) throws NullPointerException, IOException {
-        String filepath = System.getProperty("user.dir")+"/src/main/resources/static/files";
         UUID uuid = UUID.randomUUID();
         String filename = uuid+"_"+file.getOriginalFilename();
+        String filepath = System.getProperty("user.dir")+"/src/main/resources/static/files";
         File savefile = new File(filepath, filename);
         file.transferTo(savefile);
-        signUpRequestDto.setFilename(filename);
-        signUpRequestDto.setFilepath("/files"+filename);
         String username = signUpRequestDto.getUsername();
         String password = passwordEncoder.encode(signUpRequestDto.getPassword());
-        String image = signUpRequestDto.getImage();
         String nickname = signUpRequestDto.getNickname();
 
         // 회원 중복 확인
@@ -60,9 +57,10 @@ public class UserServiceImpl {
             role = UserRoleEnum.ADMIN;
         }
 
-        Users user = new Users(username, password, image, nickname, filepath, filename, role);
-        Profile profile = new Profile(username, nickname, image, filepath, filename);
+        Users user = new Users(username, password, nickname, filename, filepath, role);
         userRepository.save(user);
+
+        Profile profile = new Profile(username, nickname, filename, filepath);
         profileRepository.save(profile);
     }
 
@@ -78,7 +76,7 @@ public class UserServiceImpl {
         }
     }
 
-    @Transactional // 로그인
+    @Transactional
     public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
@@ -93,14 +91,13 @@ public class UserServiceImpl {
             throw new CustomException(ExceptionStatus.WRONG_PASSWORD);
         }
 
-
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
     }
 
-    @Transactional // 유저 자신의 프로필 변경
+    @Transactional
     public Long changeUserProfile(ProfileRequestDto profileRequestDto, Users user) {
         Users users = userRepository.findById(user.getId()).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_USERNAME));
-        users.updateUser(profileRequestDto);
+        users.updateUserProfile(profileRequestDto);
         userRepository.save(users);
 
         Profile profile = profileRepository.findById(user.getId()).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
@@ -109,7 +106,7 @@ public class UserServiceImpl {
         return 1L;
     }
 
-    @Transactional // 유저 자신의 정보 조회
+    @Transactional
     public ProfileResponseDto getMyProfile(Users user) {
         Profile profile = profileRepository.findById(user.getId()).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
         return new ProfileResponseDto(profile);
@@ -117,7 +114,6 @@ public class UserServiceImpl {
 
     @Transactional // admin 에게 seller 권한 요청 보내기
     public String applySeller(SellerProfileRequestDto sellerProfileRequestDto, Users user) {
-//        String username = sellerProfileRequestDto.getUsername();
         String category = sellerProfileRequestDto.getCategory();
         String introduce = sellerProfileRequestDto.getIntroduce();
 
