@@ -33,7 +33,6 @@ public class BoardServiceImpl implements  BoardService {
     private final RequestService requestService;
     private final UserRepository userRepository;
 
-
     @Override
     @Transactional  //업데이트 쿼리 날리는거 아니면 ... 더티채킹.......원... 값이 변경거는 비교 .. ~  //
     public CreateSalePostResponseDto createSalePost(SalePostRequestDto salePostRequestDto,Users users) {
@@ -130,7 +129,7 @@ public Result memberV2(){
 
     return new Result(collect.size(), collect);
 }
-<<<<<<< HEAD
+
     */
 
     //판매상품수정

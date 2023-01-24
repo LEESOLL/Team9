@@ -52,11 +52,6 @@ public class UserServiceImpl {
 
         // 회원 중복 확인
         duplicateCheckByUsername(username);
-        /*Optional<Users> found = userRepository.findByUsername(username);
-        if(found.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
-        }*/
-
 
         // 사용자 Role 확인
         UserRoleEnum role = UserRoleEnum.USER;
@@ -64,27 +59,19 @@ public class UserServiceImpl {
             checkByAdminPassword(signUpRequestDto);
             role = UserRoleEnum.ADMIN;
         }
-        /*if (signUpRequestDto.isAdmin()) {
-            if (!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
-                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
-            }
-            role = UserRoleEnum.ADMIN;
-        }*/
-
 
         Users user = new Users(username, password, image, nickname, filepath, filename, role);
-//        Users seller = new Users(username, password, nickname, UserRoleEnum.SELLER);
-        Profile profile = new Profile(username, nickname, image, filepath, filename);  //생성자 이미있다고? 어디..?
+        Profile profile = new Profile(username, nickname, image, filepath, filename);
         userRepository.save(user);
-//        userRepository.save(seller);
         profileRepository.save(profile);
     }
 
-
+    // 회원 중복 확인
     public void duplicateCheckByUsername(String username) throws RuntimeException{
         if(userRepository.findByUsername(username).isPresent())
             throw new CustomException(ExceptionStatus.DUPLICATED_USERNAME);
     }
+    // 어드민 비밀번호 확인
     public void checkByAdminPassword(SignUpRequestDto signUpRequestDto) throws RuntimeException{
         if(!signUpRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
             throw new CustomException(ExceptionStatus.WRONG_ADMINTOKEN);
@@ -102,73 +89,56 @@ public class UserServiceImpl {
         );
         // 비밀번호 확인
         if(!passwordEncoder.matches(password, user.getPassword())){
-            throw new CustomException(ExceptionStatus.WRONG_PASSWORD);         }
+
+            throw new CustomException(ExceptionStatus.WRONG_PASSWORD);
+        }
+
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
     }
 
     @Transactional // 유저 자신의 프로필 변경
-
-    public Long changeUserProfile(Long id, ProfileRequestDto profileRequestDto) {
-        Users users = userRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_USERNAME));
+    public Long changeUserProfile(ProfileRequestDto profileRequestDto, Users user) {
+        Users users = userRepository.findById(user.getId()).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_USERNAME));
         users.updateUser(profileRequestDto);
         userRepository.save(users);
-        Profile profile = profileRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
 
+        Profile profile = profileRepository.findById(user.getId()).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
         profile.updateUserProfile(profileRequestDto);
         profileRepository.save(profile);
         return 1L;
     }
 
     @Transactional // 유저 자신의 정보 조회
-    public ProfileResponseDto getMyProfile(Long id) {
-        Profile profile = profileRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
+    public ProfileResponseDto getMyProfile(Users user) {
+        Profile profile = profileRepository.findById(user.getId()).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
         return new ProfileResponseDto(profile);
     }
 
     @Transactional // admin 에게 seller 권한 요청 보내기
     public String applySeller(SellerProfileRequestDto sellerProfileRequestDto, Users user) {
-        String username = sellerProfileRequestDto.getUsername(); //user.getUsername() 을 할 것인가 sellerProfileRequestDto.getUsername() 을 할것인가..
+//        String username = sellerProfileRequestDto.getUsername();
         String category = sellerProfileRequestDto.getCategory();
         String introduce = sellerProfileRequestDto.getIntroduce();
 
-        Optional<AuthorityDemand> foundAuthorityDemand = authorityDemandRepository.findByUsername(username);
-/*        Optional<Users> foundUser = userRepository.findByUsername(username);
-        UserRoleEnum role = foundUser.get().getRole();
-        if (role == UserRoleEnum.SELLER) {
-            throw new IllegalArgumentException("이미 판매자로 등록된 유저입니다.");
-        }
-        else if (role == UserRoleEnum.ADMIN) {
-            throw new IllegalArgumentException("ADMIN 계정입니다. 요청이 불가합니다.");
-        }
+        Optional<AuthorityDemand> foundAuthorityDemand = authorityDemandRepository.findByUsername(user.getUsername());
 
-        if (foundAuthorityDemand.isPresent()) {
-            if (foundAuthorityDemand.get().getRole().equals(PermissionStatusEnum.WAITING)) {
-                throw new IllegalArgumentException("이미 전송된 요청입니다.");
-            } else if(foundAuthorityDemand.get().getRole().equals(PermissionStatusEnum.REFUSE)) {
-                foundAuthorityDemand.get().updateAuthorityDemand(username, category, introduce);
-                return username;
-            }
-        }*/
-        checkAuthority(sellerProfileRequestDto);
+        checkAuthority(user.getUsername());
 
         if (foundAuthorityDemand.isPresent()) {
             if (foundAuthorityDemand.get().getRole().equals(PermissionStatusEnum.REFUSE)) {
-                foundAuthorityDemand.get().updateAuthorityDemand(username, category, introduce);
-                return username;
+                foundAuthorityDemand.get().updateAuthorityDemand(user.getUsername(), category, introduce);
+                return user.getUsername();
             } else {
-                checkDemand(sellerProfileRequestDto);
+                checkDemand(user.getUsername());
             }
         }
-        AuthorityDemand authorityDemand = new AuthorityDemand(username, category, introduce);
+        AuthorityDemand authorityDemand = new AuthorityDemand(user.getUsername(), category, introduce);
         authorityDemandRepository.save(authorityDemand);
-        return username;
+        return user.getUsername();
 
     }
-    public void checkAuthority(SellerProfileRequestDto sellerProfileRequestDto)throws RuntimeException{
-        String username = sellerProfileRequestDto.getUsername();
-        Users user = userRepository.findByUsername(username).orElseThrow(
-                () -> new CustomException(ExceptionStatus.WRONG_USERNAME));
+    public void checkAuthority(String username) throws RuntimeException{
         Optional<Users> foundUser = userRepository.findByUsername(username);
         UserRoleEnum role = foundUser.get().getRole();
         if (role == UserRoleEnum.SELLER) {
@@ -178,14 +148,12 @@ public class UserServiceImpl {
             throw new CustomException(ExceptionStatus.ALREADY_EXIST_ADMIN);
         }
     }
-    public void checkDemand(SellerProfileRequestDto sellerProfileRequestDto)throws RuntimeException{
-        String username = sellerProfileRequestDto.getUsername();
+    public void checkDemand(String username) throws RuntimeException{
         Optional<AuthorityDemand> foundAuthorityDemand = authorityDemandRepository.findByUsername(username);
         if (foundAuthorityDemand.get().getRole().equals(PermissionStatusEnum.WAITING)) {
             throw new CustomException(ExceptionStatus.ALREADY_EXIST_REQUEST);
         }
     }
-
 
 }
 

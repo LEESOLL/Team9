@@ -42,14 +42,13 @@ public class SellerServiceImpl implements SellerService {
     }
 
     @Transactional // 판매자 자신의 프로필 변경
-    public Long changeSellerProfile(Long id, SellerProfileRequestDto sellerProfileRequestDto) {
-        Users users = userRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_USERNAME));
-        if(users.getRole().equals(UserRoleEnum.USER)) {
+    public Long changeSellerProfile(SellerProfileRequestDto sellerProfileRequestDto, Users user) {
+        if(user.getRole().equals(UserRoleEnum.USER)) {
             throw new CustomException(ExceptionStatus.ACCESS_DENINED);
         }
-        users.updateSeller(sellerProfileRequestDto);
-        userRepository.save(users);
-        Profile profile = profileRepository.findById(id).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
+        user.updateSeller(sellerProfileRequestDto);
+        userRepository.save(user);
+        Profile profile = profileRepository.findById(user.getId()).orElseThrow(() -> new CustomException(ExceptionStatus.WRONG_PROFILE));
         profile.updateSelleProfile(sellerProfileRequestDto);
         profileRepository.save(profile);
         return 1L;
