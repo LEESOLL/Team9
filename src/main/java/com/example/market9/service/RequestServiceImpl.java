@@ -1,16 +1,15 @@
 package com.example.market9.service;
 
-import com.example.market9.dto.RequestSellerDto;
-import com.example.market9.dto.RequestSellerListResponseDto;
-import com.example.market9.dto.Response;
-import com.example.market9.entity.Board;
-import com.example.market9.entity.SaleStatusEnum;
-import com.example.market9.entity.UserRequest;
-import com.example.market9.entity.Users;
+import com.example.market9.requisition.dto.PurchaseRequisitionDto;
+import com.example.market9.requisition.dto.PurchaseRequisitionListResponseDto;
+import com.example.market9.board.entity.Board;
+import com.example.market9.board.entity.SaleStatusEnum;
+import com.example.market9.requisition.entity.PurchaseRequisition;
+import com.example.market9.user.entity.Users;
 import com.example.market9.exception.CustomException;
 import com.example.market9.exception.ExceptionStatus;
-import com.example.market9.repository.BoardRepository;
-import com.example.market9.repository.PurchaseRequestRepository;
+import com.example.market9.board.repository.BoardRepository;
+import com.example.market9.requisition.repository.PurchaseRequisitionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -26,18 +25,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RequestServiceImpl implements RequestService {
 
-    private final PurchaseRequestRepository purchaseRequestRepository;
+    private final PurchaseRequisitionRepository purchaseRequisitionRepository;
 
     private final BoardRepository boardRepository;
 
     /**
      * 고객이 판매자에게 구매요청을 보내는 메소드
       * @param productId  패스베리어블로 받아오는 게시판 아이디 .. ~
-     * @param requestSellerDto  요청하는 내용이 들어감 ...
+     * @param purchaseRequisitionDto  요청하는 내용이 들어감 ...
      */
     @Transactional
     @Override
-    public ResponseEntity<String> requestSeller(Long productId, RequestSellerDto requestSellerDto, Users users) {
+    public ResponseEntity<String> requestSeller(Long productId, PurchaseRequisitionDto purchaseRequisitionDto, Users users) {
 
 
         boolean present = boardRepository.findById(productId).isPresent();
@@ -46,7 +45,7 @@ public class RequestServiceImpl implements RequestService {
            throw new CustomException(ExceptionStatus.BOARD_NOT_EXIST);
         }
 
-        List<UserRequest> userAllRequests = getUserRequestList(productId);
+        List<PurchaseRequisition> userAllRequests = getUserRequestList(productId);
 
         ResponseEntity<String> BAD_REQUEST = getResponse(userAllRequests);
 
@@ -57,8 +56,8 @@ public class RequestServiceImpl implements RequestService {
 
         Boolean status = false;
        /* String sellerName = board.getUserName();*/
-        UserRequest userRequests = new UserRequest(requestSellerDto, productId,users.getUsername(), status,board.getUser());
-        purchaseRequestRepository.save(userRequests);
+        PurchaseRequisition userRequests = new PurchaseRequisition(purchaseRequisitionDto, productId,users.getUsername(), status,board.getUser());
+        purchaseRequisitionRepository.save(userRequests);
 
         return new ResponseEntity<>("요청 완료 되었습니다", HttpStatus.OK);
     }
@@ -72,27 +71,27 @@ public class RequestServiceImpl implements RequestService {
      */
     @Override
     @Transactional
-    public List<Response> getRequestSellerList(Long productId, Users user) {
+    public List<PurchaseRequisitionListResponseDto> getRequestSellerList(Long productId, Users user) {
         Board board = boardRepository.findById(productId).orElseThrow(()-> new CustomException(ExceptionStatus.BOARD_NOT_EXIST));
 
         if(board.getUser().getId().equals(user.getId())) {
-            List<UserRequest> userRequests = getUserRequestList(productId);
-            List<Response> response = new ArrayList<>();
+            List<PurchaseRequisition> purchaseRequisitions = getUserRequestList(productId);
+            List<PurchaseRequisitionListResponseDto> purchaseRequisitionListResponseDto = new ArrayList<>();
 
-            for (UserRequest request : userRequests) {
+            for (PurchaseRequisition request : purchaseRequisitions) {
                 String requestContent = request.getRequestContent();
                 String userName = request.getUserName();
                 Long postId = request.getProductId();
 
-                Response response1 = new Response(requestContent,userName,postId);
+                PurchaseRequisitionListResponseDto purchaseRequisitionListResponseDto1 = new PurchaseRequisitionListResponseDto(requestContent,userName,postId);
 
-                response.add(response1);
+                purchaseRequisitionListResponseDto.add(purchaseRequisitionListResponseDto1);
 
             }
             // 요청내용/요청한사람아이디=이름/무슨게시물에 요청왔나///
 
 
-            return  response;
+            return purchaseRequisitionListResponseDto;
         }throw new CustomException(ExceptionStatus.WRONG_SELLER_ID_T0_BOARD);
     }
 
@@ -104,20 +103,20 @@ public class RequestServiceImpl implements RequestService {
      */
     @Override
     @Transactional
-    public List<Response> getRequestAllSellerList(Users seller , Pageable pageable) {
+    public List<PurchaseRequisitionListResponseDto> getRequestAllSellerList(Users seller , Pageable pageable) {
 
-        List<UserRequest> allBySellerName = purchaseRequestRepository.findBySeller(seller,pageable);
+        List<PurchaseRequisition> allBySellerName = purchaseRequisitionRepository.findBySeller(seller,pageable);
         /*return new RequestSellerListResponseDto(
         allBySellerName);*/
-        List<Response> responses = new ArrayList<>();
-        for (UserRequest respons : allBySellerName) {
+        List<PurchaseRequisitionListResponseDto> responses = new ArrayList<>();
+        for (PurchaseRequisition respons : allBySellerName) {
             String requestContent = respons.getRequestContent();
             String userName = respons.getUserName();
             Long postId = respons.getProductId();
 
-            Response response = new Response(requestContent,userName,postId);
+            PurchaseRequisitionListResponseDto purchaseRequisitionListResponseDto = new PurchaseRequisitionListResponseDto(requestContent,userName,postId);
 
-            responses.add(response);
+            responses.add(purchaseRequisitionListResponseDto);
         }
 
 
@@ -132,29 +131,29 @@ public class RequestServiceImpl implements RequestService {
     @Transactional
     public ResponseEntity<String> purchaseConfirmation(Long requestId,Users seller) { //메소드는 하나의 일만 해야한다,, 나머지는 시키면된다..//
 
-        UserRequest userRequest = getUserRequest(requestId);
+        PurchaseRequisition purchaseRequisition = getUserRequest(requestId);
 
-        if(!userRequest.getSeller().getId().equals(seller.getId())){
+        if(!purchaseRequisition.getSeller().getId().equals(seller.getId())){
             throw new CustomException(ExceptionStatus.WRONG_SELLER_ID_TO_USER_REQUEST);
         }
 
-        Long boardId = getBoardId(userRequest);
+        Long boardId = getBoardId(purchaseRequisition);
 
-        List<UserRequest> userAllRequests = getUserRequestList(boardId);
+        List<PurchaseRequisition> userAllRequests = getUserRequestList(boardId);
         ResponseEntity<String> BAD_REQUEST = getResponse(userAllRequests);
 
         if (BAD_REQUEST != null) {
             return BAD_REQUEST;
         }
-        userRequest.acceptDeal(true);
+        purchaseRequisition.acceptDeal(true);
         Board board = getBoard(boardId);
         board.soldOut(SaleStatusEnum.SOLD_OUT);
 
         return new ResponseEntity<>("거래 완료",HttpStatus.OK);
     }
 
-    private static ResponseEntity<String> getResponse(List<UserRequest> userAllRequests) {
-        for (UserRequest request : userAllRequests) {
+    private static ResponseEntity<String> getResponse(List<PurchaseRequisition> userAllRequests) {
+        for (PurchaseRequisition request : userAllRequests) {
             if(request.isStatus()){
                 return new ResponseEntity<>("이미 판매된 게시글입니다.", HttpStatus.BAD_REQUEST);
             }
@@ -168,24 +167,24 @@ public class RequestServiceImpl implements RequestService {
         return boardRepository.findById(boardId).orElseThrow(() -> new CustomException(ExceptionStatus.BOARD_NOT_EXIST));
     }
 
-    private static Long getBoardId(UserRequest userRequest) {
-        return userRequest.getProductId();
+    private static Long getBoardId(PurchaseRequisition purchaseRequisition) {
+        return purchaseRequisition.getProductId();
     }
 
-    private UserRequest getUserRequest(Long requestId) {
-        return purchaseRequestRepository.findById(requestId).orElseThrow(() -> new CustomException(ExceptionStatus.REQUEST_NOT_EXIST));
+    private PurchaseRequisition getUserRequest(Long requestId) {
+        return purchaseRequisitionRepository.findById(requestId).orElseThrow(() -> new CustomException(ExceptionStatus.REQUEST_NOT_EXIST));
     }
 
 
-    public List<UserRequest> getAllByProductId(Long boardId) {
+    public List<PurchaseRequisition> getAllByProductId(Long boardId) {
         return getUserRequestList(boardId);
     }
 
-    public Optional<UserRequest> deleteUserRequest(Long productId) {
-        return purchaseRequestRepository.deleteByProductId(productId);
+    public Optional<PurchaseRequisition> deleteUserRequest(Long productId) {
+        return purchaseRequisitionRepository.deleteByProductId(productId);
     }
-    private List<UserRequest> getUserRequestList(Long productId) {
-        return purchaseRequestRepository.findAllByProductId(productId);
+    private List<PurchaseRequisition> getUserRequestList(Long productId) {
+        return purchaseRequisitionRepository.findAllByProductId(productId);
     }
 
 

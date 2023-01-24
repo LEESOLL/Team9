@@ -1,7 +1,7 @@
 package com.example.market9.security;
 
-import com.example.market9.entity.Users;
-import com.example.market9.repository.UserRepository;
+import com.example.market9.user.entity.Users;
+import com.example.market9.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,7 +1,7 @@
 package com.example.market9.security;
 
-import com.example.market9.entity.UserRoleEnum;
-import com.example.market9.entity.Users;
+import com.example.market9.user.entity.UserRoleEnum;
+import com.example.market9.user.entity.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
