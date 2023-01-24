@@ -39,6 +39,7 @@ public class UserController {
         userServiceImpl.login(loginRequestDto, response);
         return "login success";
     }
+/*
 
     // 3. 나의 정보 설정(프로필 변경)
     @PutMapping("/profile")
@@ -51,6 +52,7 @@ public class UserController {
     public ProfileResponseDto getMyProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userServiceImpl.getMyProfile(userDetails.getUser());
     }
+*/
 
 
     // 5. 판매자 등록 요청 보내기

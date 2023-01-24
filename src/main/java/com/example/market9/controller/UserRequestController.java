@@ -1,18 +1,16 @@
 package com.example.market9.controller;
 
-import com.example.market9.dto.OnlyUserNameDto;
 import com.example.market9.dto.RequestSellerDto;
 import com.example.market9.dto.RequestSellerListResponseDto;
+import com.example.market9.entity.Users;
 import com.example.market9.security.UserDetailsImpl;
 import com.example.market9.service.BoardService;
 import com.example.market9.service.RequestService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -21,12 +19,10 @@ import org.springframework.web.bind.annotation.*;
  * 유저가 셀러에게 요청을 보내는걸 처리하는 컨트롤러입니다..!
  */
 @RestController
-@Getter
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
 public class UserRequestController {
 
-    private final BoardService boardService;
 
     private final RequestService requestService;
 
@@ -42,6 +38,8 @@ public class UserRequestController {
     public ResponseEntity<String> requestSeller(@PathVariable Long productId, @RequestBody RequestSellerDto requestSellerDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
 
 
+
+
         /*new ResponseEntity<> ("요청 완료 되었습니다", HttpStatus.OK);*/
         return requestService.requestSeller(productId,requestSellerDto, userDetails.getUser());
     }
@@ -52,18 +50,17 @@ public class UserRequestController {
      * @return PurchaseRequestRepository 에서 게시글 id에 대항하는 요청을 반환
      */
     @GetMapping("/{productId}/request") //게시글에 들어온 요청보기
-    public RequestSellerListResponseDto getRequestSellerList(@PathVariable Long productId){
-        return  requestService.getRequestSellerList(productId);
+    public RequestSellerListResponseDto getRequestSellerList(@PathVariable Long productId,@AuthenticationPrincipal UserDetailsImpl userDetails){
+        return  requestService.getRequestSellerList(productId,userDetails.getUser());
     }
 
     /**
      * 셀러가 쓴 게시글에 대한 모든 요청을 보는것..
-     * @param userName 이쯤 되면 질리 도록 들은 시큐리티에서 처리해주겠지 하는 접근자 이름
      * @return PurchaseRequestRepository 에서  유저네임으로 조회 되는 값을 반환
      */
     @GetMapping("/request")  //전체요청보기 ..,
     public RequestSellerListResponseDto getRequestAllSellerList(
-            @RequestBody OnlyUserNameDto userName ,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(value = "page",required = false,defaultValue ="1") Integer page,
             @RequestParam(value = "size",required = false,defaultValue = "2") Integer size,
             @RequestParam(value = "isAsc",required = false,defaultValue = "false")Boolean isAsc,
@@ -75,21 +72,24 @@ public class UserRequestController {
         Sort sort = Sort.by(direction,sortBy);
         Pageable pageRequest = PageRequest.of(page-1,size,sort);
 
-        return  requestService.getRequestAllSellerList(userName.getUserName(), pageRequest);
+        Users seller = userDetails.getUser();
+
+        return  requestService.getRequestAllSellerList(seller, pageRequest);
     }
 
 
     /**
+     * 1/2/3/4    > 1,
      * 여러개의 요청들 중에서 하나를 선택해서 ..거래수락을 함
      * 그러면 .. status 가 true로 바뀌고
      * 보드에서 판매완료로 바뀌게 해줌 ...
      * @param requestId  이건 구매요청폼의 아이디이다..
      * @return 거래가 완료 되었다는 표시와  status OK 표시...
      */
-    @PutMapping("/request/{requestId}")
-    public ResponseEntity<String> purchaseConfirmation(@PathVariable Long requestId){
+    @PutMapping("/request/{requestId}") // 이상황은 .. 이미 셀러마다 들어온 요청 검증이 끝난 상황..? 셀러가 가입한 아이디 !
+    public ResponseEntity<String> purchaseConfirmation(@PathVariable Long requestId ,@AuthenticationPrincipal UserDetailsImpl userDetails){
 
-      return requestService.purchaseConfirmation(requestId);
+      return requestService.purchaseConfirmation(requestId,userDetails.getUser());
     }
 
 }

@@ -101,9 +101,8 @@ public class UserServiceImpl {
                 () -> new CustomException(ExceptionStatus.WRONG_USERNAME)
         );
         // 비밀번호 확인
-        if(!user.getPassword().equals(password)){
-            throw new CustomException(ExceptionStatus.WRONG_PASSWORD);
-        }
+        if(!passwordEncoder.matches(password, user.getPassword())){
+            throw new CustomException(ExceptionStatus.WRONG_PASSWORD);         }
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername(), user.getRole()));
     }
@@ -118,7 +117,7 @@ public class UserServiceImpl {
 
         profile.updateUserProfile(profileRequestDto);
         profileRepository.save(profile);
-        return user.getId();
+        return 1L;
     }
 
     @Transactional // 유저 자신의 정보 조회

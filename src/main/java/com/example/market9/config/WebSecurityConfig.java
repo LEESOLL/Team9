@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
-@EnableGlobalMethodSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
 
 //    private final UserDetailsServiceImpl userDetailsService;
@@ -57,9 +57,11 @@ public class WebSecurityConfig {
                 .antMatchers("/api/auth/seller/accept/**").hasAnyRole(UserRoleEnum.Authority.ADMIN)
                 .antMatchers("/api/auth/seller/refuse/**").hasAnyRole(UserRoleEnum.Authority.ADMIN)
                 .antMatchers("/api/auth/users").hasAnyRole(UserRoleEnum.Authority.ADMIN)
-                .antMatchers("/api/auth/seller").hasAnyRole(UserRoleEnum.Authority.ADMIN)
+                .antMatchers("/api/auth/seller").permitAll()
                 .antMatchers("/api/auth/signup").permitAll()
                 .antMatchers("/api/auth/login").permitAll()
+                .antMatchers("/api/auth/products/").permitAll()
+                .antMatchers("/api/auth/products/post").hasAnyRole(UserRoleEnum.Authority.SELLER)
                 .anyRequest().authenticated()
                 .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class); //JWT 인증/인가를 사용하기 위한 설정
 

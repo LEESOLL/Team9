@@ -44,11 +44,9 @@ public class SellerController {
     public SellerProfileResponseDto getSellerProfile(@PathVariable Long id) {
         return sellerServiceImpl.getSellerProfile(id);
     }
-
     // 3. 판매자 자신의 프로필 변경
-    @PutMapping("/sellers/{id}")
+   /* @PutMapping("/sellers/")
     public Long changeSellerProfile(@PathVariable Long id, @RequestBody SellerProfileRequestDto sellerProfileRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return sellerServiceImpl.changeSellerProfile(sellerProfileRequestDto, userDetails.getUser());
-    }
-
+        return sellerServiceImpl.changeSellerProfile(sellerProfileRequestDto);
+    }*/
 }

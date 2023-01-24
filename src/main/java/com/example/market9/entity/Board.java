@@ -28,7 +28,7 @@ public class Board extends TimeStamp {
     @Enumerated(value = EnumType.STRING)
     private SaleStatusEnum status; //? 이넘으로 하는으로 하는
 
-    private String userName;
+/*    private String userName;*/
 
 
     // Foreign Key
@@ -50,7 +50,7 @@ public class Board extends TimeStamp {
         //?
 
         //-----------userName은 시큐리티에서 받아오는걸로 바꾸궈야함------------//
-        this.userName =salePostRequestDto.getUserName();
+        /*this.userName =salePostRequestDto.getUserName();*/
         this.user = users;
         //-----------userName은 시큐리티에서 받아오는걸로 바꾸궈야함------------//
 
